@@ -21,3 +21,5 @@ export {
 export * from './IPreRoomUserJoined';
 export * from './IPostRoomUserJoined';
 export * from './IRoomUserJoinedContext';
+export * from './IRoomUserTyping';
+export * from './IRoomUserTypingContext';
