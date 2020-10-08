@@ -19,6 +19,7 @@ export enum AppInterface {
     IPostRoomDeleted = 'IPostRoomDeleted',
     IPreRoomUserJoined = 'IPreRoomUserJoined',
     IPostRoomUserJoined = 'IPostRoomUserJoined',
+    IRoomUserTyping = 'IRoomUserTyping',
     // External Components
     IPostExternalComponentOpened = 'IPostExternalComponentOpened',
     IPostExternalComponentClosed = 'IPostExternalComponentClosed',
