@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const INotifier_1 = require("../../definition/accessors/INotifier");
 const MessageBuilder_1 = require("./MessageBuilder");
 class Notifier {
     constructor(userBridge, msgBridge, appId) {
@@ -31,6 +32,17 @@ class Notifier {
                 message.sender = appUser;
             }
             yield this.msgBridge.notifyRoom(room, message, this.appId);
+        });
+    }
+    typing(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            options.scope = options.scope || INotifier_1.TypingScope.Room;
+            if (!options.username) {
+                const appUser = yield this.userBridge.getAppUser(this.appId);
+                options.username = appUser && appUser.name || '';
+            }
+            this.msgBridge.typing(Object.assign({}, options, { isTyping: true }));
+            return () => this.msgBridge.typing(Object.assign({}, options, { isTyping: false }));
         });
     }
     getMessageBuilder() {
