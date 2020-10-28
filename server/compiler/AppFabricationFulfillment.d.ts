@@ -1,14 +1,12 @@
 import { IAppInfo } from '../../definition/metadata';
 import { AppLicenseValidationResult } from '../marketplace/license';
 import { ProxiedApp } from '../ProxiedApp';
-import { ICompilerError } from './ICompilerError';
 export declare class AppFabricationFulfillment {
     info: IAppInfo;
     app: ProxiedApp;
     implemented: {
         [int: string]: boolean;
     };
-    compilerErrors: Array<ICompilerError>;
     licenseValidationResult: AppLicenseValidationResult;
     storageError: string;
     appUserError: object;
@@ -23,8 +21,6 @@ export declare class AppFabricationFulfillment {
     getImplementedInferfaces(): {
         [int: string]: boolean;
     };
-    setCompilerErrors(errors: Array<ICompilerError>): void;
-    getCompilerErrors(): Array<ICompilerError>;
     setStorageError(errorMessage: string): void;
     setAppUserError(error: object): void;
     getStorageError(): string;

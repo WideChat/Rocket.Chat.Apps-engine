@@ -38,7 +38,8 @@ class AppAccessorManager {
             const apis = new accessors_1.ApiExtend(this.manager.getApiManager(), appId);
             const sets = new accessors_1.SettingsExtend(rl);
             const excs = new accessors_1.ExternalComponentsExtend(this.manager.getExternalComponentManager(), appId);
-            this.configExtenders.set(appId, new accessors_1.ConfigurationExtend(htt, sets, cmds, apis, excs));
+            const scheduler = new accessors_1.SchedulerExtend(this.manager.getSchedulerManager(), appId);
+            this.configExtenders.set(appId, new accessors_1.ConfigurationExtend(htt, sets, cmds, apis, excs, scheduler));
         }
         return this.configExtenders.get(appId);
     }

@@ -7,6 +7,7 @@ var AppMethod;
     AppMethod["_COMMAND_EXECUTOR"] = "executor";
     AppMethod["_COMMAND_PREVIEWER"] = "previewer";
     AppMethod["_COMMAND_PREVIEW_EXECUTOR"] = "executePreviewItem";
+    AppMethod["_JOB_PROCESSOR"] = "jobProcessor";
     AppMethod["INITIALIZE"] = "initialize";
     AppMethod["ONENABLE"] = "onEnable";
     AppMethod["ONDISABLE"] = "onDisable";

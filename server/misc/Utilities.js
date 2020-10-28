@@ -27,8 +27,15 @@ class Utilities {
     static deepCloneAndFreeze(item) {
         return Utilities.deepFreeze(Utilities.deepClone(item));
     }
-    static transformModuleForCustomRequire(moduleName) {
+    /**
+     * Keeps compatibility with apps compiled and stored in the database
+     * with previous Apps-Engine versions
+     */
+    static transformFallbackModuleForCustomRequire(moduleName) {
         return path.normalize(moduleName).replace(/\.\.?\//g, '').replace(/^\//, '') + '.ts';
+    }
+    static transformModuleForCustomRequire(moduleName) {
+        return path.normalize(moduleName).replace(/\.\.?\//g, '').replace(/^\//, '') + '.js';
     }
     static allowedInternalModuleRequire(moduleName) {
         return moduleName in AllowedInternalModules;
@@ -53,17 +60,20 @@ class Utilities {
                 mod = path.join(currentPath, mod);
             }
             const transformedModule = Utilities.transformModuleForCustomRequire(mod);
-            if (files[transformedModule]) {
-                const ourExport = {};
+            const fallbackModule = Utilities.transformFallbackModuleForCustomRequire(mod);
+            const filename = files[transformedModule] ? transformedModule : files[fallbackModule] ? fallbackModule : undefined;
+            let fileExport;
+            if (filename) {
+                fileExport = {};
                 const context = vm.createContext({
-                    require: Utilities.buildCustomRequire(files, path.dirname(transformedModule) + '/'),
+                    require: Utilities.buildCustomRequire(files, path.dirname(filename) + '/'),
                     console,
-                    exports: ourExport,
+                    exports: fileExport,
                     process: {},
                 });
-                vm.runInContext(files[transformedModule].compiled, context);
-                return ourExport;
+                vm.runInContext(files[filename], context);
             }
+            return fileExport;
         };
     }
 }

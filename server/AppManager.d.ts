@@ -1,7 +1,7 @@
 import { AppBridges } from './bridges';
 import { AppCompiler, AppFabricationFulfillment, AppPackageParser } from './compiler';
 import { IGetAppsFilter } from './IGetAppsFilter';
-import { AppAccessorManager, AppApiManager, AppExternalComponentManager, AppLicenseManager, AppListenerManager, AppSettingsManager, AppSlashCommandManager } from './managers';
+import { AppAccessorManager, AppApiManager, AppExternalComponentManager, AppLicenseManager, AppListenerManager, AppSchedulerManager, AppSettingsManager, AppSlashCommandManager } from './managers';
 import { ProxiedApp } from './ProxiedApp';
 import { AppLogStorage, AppStorage } from './storage';
 import { AppStatus } from '../definition/AppStatus';
@@ -21,6 +21,7 @@ export declare class AppManager {
     private readonly externalComponentManager;
     private readonly settingsManager;
     private readonly licenseManager;
+    private readonly schedulerManager;
     private isLoaded;
     constructor(rlStorage: AppStorage, logStorage: AppLogStorage, rlBridges: AppBridges);
     /** Gets the instance of the storage connector. */
@@ -46,6 +47,7 @@ export declare class AppManager {
     getExternalComponentManager(): AppExternalComponentManager;
     /** Gets the manager of the settings, updates and getting. */
     getSettingsManager(): AppSettingsManager;
+    getSchedulerManager(): AppSchedulerManager;
     /** Gets whether the Apps have been loaded or not. */
     areAppsLoaded(): boolean;
     /**
@@ -61,9 +63,9 @@ export declare class AppManager {
     getOneById(appId: string): ProxiedApp;
     enable(id: string): Promise<boolean>;
     disable(id: string, status?: AppStatus, silent?: boolean): Promise<boolean>;
-    add(zipContentsBase64d: string, enable?: boolean, marketplaceInfo?: IMarketplaceInfo): Promise<AppFabricationFulfillment>;
+    add(appPackage: Buffer, enable?: boolean, marketplaceInfo?: IMarketplaceInfo): Promise<AppFabricationFulfillment>;
     remove(id: string): Promise<ProxiedApp>;
-    update(zipContentsBase64d: string): Promise<AppFabricationFulfillment>;
+    update(appPackage: Buffer): Promise<AppFabricationFulfillment>;
     getLanguageContent(): {
         [key: string]: object;
     };
