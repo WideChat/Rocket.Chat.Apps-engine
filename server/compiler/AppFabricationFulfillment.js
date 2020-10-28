@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const license_1 = require("../marketplace/license");
 class AppFabricationFulfillment {
     constructor() {
-        this.compilerErrors = new Array();
         this.licenseValidationResult = new license_1.AppLicenseValidationResult();
     }
     setAppInfo(information) {
@@ -24,12 +23,6 @@ class AppFabricationFulfillment {
     }
     getImplementedInferfaces() {
         return this.implemented;
-    }
-    setCompilerErrors(errors) {
-        this.compilerErrors = errors;
-    }
-    getCompilerErrors() {
-        return this.compilerErrors;
     }
     setStorageError(errorMessage) {
         this.storageError = errorMessage;

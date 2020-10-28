@@ -4,6 +4,7 @@ const ModifyCreator_1 = require("./ModifyCreator");
 const ModifyExtender_1 = require("./ModifyExtender");
 const ModifyUpdater_1 = require("./ModifyUpdater");
 const Notifier_1 = require("./Notifier");
+const SchedulerModify_1 = require("./SchedulerModify");
 const UIController_1 = require("./UIController");
 class Modify {
     constructor(bridges, appId) {
@@ -14,6 +15,7 @@ class Modify {
         this.extender = new ModifyExtender_1.ModifyExtender(this.bridges, this.appId);
         this.notifier = new Notifier_1.Notifier(this.bridges.getUserBridge(), this.bridges.getMessageBridge(), this.appId);
         this.uiController = new UIController_1.UIController(this.appId, this.bridges);
+        this.scheduler = new SchedulerModify_1.SchedulerModify(this.bridges.getSchedulerBridge(), this.appId);
     }
     getCreator() {
         return this.creator;
@@ -29,6 +31,9 @@ class Modify {
     }
     getUiController() {
         return this.uiController;
+    }
+    getScheduler() {
+        return this.scheduler;
     }
 }
 exports.Modify = Modify;

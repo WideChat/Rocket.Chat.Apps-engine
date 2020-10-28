@@ -52,6 +52,7 @@ class AppManager {
         this.externalComponentManager = new managers_1.AppExternalComponentManager();
         this.settingsManager = new managers_1.AppSettingsManager(this);
         this.licenseManager = new managers_1.AppLicenseManager(this);
+        this.schedulerManager = new managers_1.AppSchedulerManager(this);
         this.isLoaded = false;
         AppManager.Instance = this;
     }
@@ -102,6 +103,9 @@ class AppManager {
     getSettingsManager() {
         return this.settingsManager;
     }
+    getSchedulerManager() {
+        return this.schedulerManager;
+    }
     /** Gets whether the Apps have been loaded or not. */
     areAppsLoaded() {
         return this.isLoaded;
@@ -123,15 +127,8 @@ class AppManager {
             for (const item of items.values()) {
                 const aff = new compiler_1.AppFabricationFulfillment();
                 try {
-                    const result = yield this.getParser().parseZip(this.getCompiler(), item.zip);
-                    aff.setAppInfo(result.info);
-                    aff.setImplementedInterfaces(result.implemented.getValues());
-                    aff.setCompilerErrors(result.compilerErrors);
-                    if (result.compilerErrors.length > 0) {
-                        const errors = result.compilerErrors.map(({ message }) => message).join('\n');
-                        throw new Error(`Failed to compile due to ${result.compilerErrors.length} errors:\n${errors}`);
-                    }
-                    item.compiled = result.compiledFiles;
+                    aff.setAppInfo(item.info);
+                    aff.setImplementedInterfaces(item.implemented);
                     const app = this.getCompiler().toSandBox(this, item);
                     this.apps.set(item.id, app);
                     aff.setApp(app);
@@ -195,6 +192,7 @@ class AppManager {
                     this.externalComponentManager.unregisterExternalComponents(app.getID());
                     this.apiManager.unregisterApis(app.getID());
                     this.accessorManager.purifyApp(app.getID());
+                    yield this.schedulerManager.cancelAllJobs(app.getID());
                 }
                 else if (!AppStatus_1.AppStatusUtils.isDisabled(app.getStatus())) {
                     yield this.disable(app.getID(), isManual ? AppStatus_1.AppStatus.MANUALLY_DISABLED : AppStatus_1.AppStatus.DISABLED);
@@ -293,6 +291,7 @@ class AppManager {
             this.externalComponentManager.unregisterExternalComponents(app.getID());
             this.apiManager.unregisterApis(app.getID());
             this.accessorManager.purifyApp(app.getID());
+            yield this.schedulerManager.cancelAllJobs(app.getID());
             yield app.setStatus(status, silent);
             const storageItem = yield this.storage.retrieveOne(id);
             app.getStorageItem().marketplaceInfo = storageItem.marketplaceInfo;
@@ -304,22 +303,19 @@ class AppManager {
             return true;
         });
     }
-    add(zipContentsBase64d, enable = true, marketplaceInfo) {
+    add(appPackage, enable = true, marketplaceInfo) {
         return __awaiter(this, void 0, void 0, function* () {
             const aff = new compiler_1.AppFabricationFulfillment();
-            const result = yield this.getParser().parseZip(this.getCompiler(), zipContentsBase64d);
+            const result = yield this.getParser().unpackageApp(appPackage);
             aff.setAppInfo(result.info);
             aff.setImplementedInterfaces(result.implemented.getValues());
-            aff.setCompilerErrors(result.compilerErrors);
-            if (result.compilerErrors.length > 0) {
-                return aff;
-            }
             const compiled = {
                 id: result.info.id,
                 info: result.info,
                 status: AppStatus_1.AppStatus.UNKNOWN,
-                zip: zipContentsBase64d,
-                compiled: result.compiledFiles,
+                zip: appPackage.toString('base64'),
+                // tslint:disable-next-line: max-line-length
+                compiled: Object.entries(result.files).reduce((files, [key, value]) => (files[key.replace(/\./gi, '$')] = value, files), {}),
                 languageContent: result.languageContent,
                 settings: {},
                 implemented: result.implemented.getValues(),
@@ -380,22 +376,19 @@ class AppManager {
             yield this.removeAppUser(app);
             yield this.bridges.getPersistenceBridge().purge(app.getID());
             yield this.storage.remove(app.getID());
+            yield this.schedulerManager.cancelAllJobs(app.getID());
             // Let everyone know that the App has been removed
             yield this.bridges.getAppActivationBridge().appRemoved(app);
             this.apps.delete(app.getID());
             return app;
         });
     }
-    update(zipContentsBase64d) {
+    update(appPackage) {
         return __awaiter(this, void 0, void 0, function* () {
             const aff = new compiler_1.AppFabricationFulfillment();
-            const result = yield this.getParser().parseZip(this.getCompiler(), zipContentsBase64d);
+            const result = yield this.getParser().unpackageApp(appPackage);
             aff.setAppInfo(result.info);
             aff.setImplementedInterfaces(result.implemented.getValues());
-            aff.setCompilerErrors(result.compilerErrors);
-            if (result.compilerErrors.length > 0) {
-                return aff;
-            }
             const old = yield this.storage.retrieveOne(result.info.id);
             if (!old) {
                 throw new Error('Can not update an App that does not currently exist.');
@@ -407,8 +400,8 @@ class AppManager {
                 id: result.info.id,
                 info: result.info,
                 status: this.apps.get(old.id).getStatus(),
-                zip: zipContentsBase64d,
-                compiled: result.compiledFiles,
+                zip: appPackage.toString('base64'),
+                compiled: result.files,
                 languageContent: result.languageContent,
                 settings: old.settings,
                 implemented: result.implemented.getValues(),
@@ -588,6 +581,7 @@ class AppManager {
                 this.commandManager.unregisterCommands(storageItem.id);
                 this.externalComponentManager.unregisterExternalComponents(storageItem.id);
                 this.apiManager.unregisterApis(storageItem.id);
+                yield this.schedulerManager.cancelAllJobs(storageItem.id);
                 result = false;
                 yield app.setStatus(status, silenceStatus);
             }
@@ -651,6 +645,7 @@ class AppManager {
                 this.externalComponentManager.unregisterExternalComponents(app.getID());
                 this.apiManager.unregisterApis(app.getID());
                 this.listenerManager.lockEssentialEvents(app);
+                yield this.schedulerManager.cancelAllJobs(app.getID());
             }
             if (saveToDb) {
                 storageItem.status = app.getStatus();

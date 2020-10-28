@@ -8,20 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("../errors");
 const AdmZip = require("adm-zip");
 const fs = require("fs");
 const path = require("path");
 const semver = require("semver");
 const uuidv4 = require("uuid/v4");
+const _1 = require(".");
+const errors_1 = require("../errors");
 class AppPackageParser {
     constructor() {
         this.allowedIconExts = ['.png', '.jpg', '.jpeg', '.gif'];
         this.appsEngineVersion = this.getEngineVersion();
     }
-    parseZip(compiler, zipBase64) {
+    unpackageApp(appPackage) {
         return __awaiter(this, void 0, void 0, function* () {
-            const zip = new AdmZip(Buffer.from(zipBase64, 'base64'));
+            const zip = new AdmZip(appPackage);
             const infoZip = zip.getEntry('app.json');
             let info;
             if (infoZip && !infoZip.isDirectory) {
@@ -39,47 +40,39 @@ class AppPackageParser {
             else {
                 throw new Error('Invalid App package. No "app.json" file.');
             }
+            info.classFile = info.classFile.replace('.ts', '.js');
             if (!semver.satisfies(this.appsEngineVersion, info.requiredApiVersion)) {
                 throw new errors_1.RequiredApiVersionError(info, this.appsEngineVersion);
             }
             // Load all of the TypeScript only files
-            let tsFiles = {};
-            zip.getEntries().filter((entry) => entry.entryName.endsWith('.ts') && !entry.isDirectory).forEach((entry) => {
+            const files = {};
+            zip.getEntries().filter((entry) => !entry.isDirectory && entry.entryName.endsWith('.js')).forEach((entry) => {
                 const norm = path.normalize(entry.entryName);
                 // Files which start with `.` are supposed to be hidden
                 if (norm.startsWith('.')) {
                     return;
                 }
-                tsFiles[norm] = {
-                    name: norm,
-                    content: entry.getData().toString(),
-                    version: 0,
-                };
+                files[norm] = entry.getData().toString();
             });
             // Ensure that the main class file exists
-            if (!tsFiles[path.normalize(info.classFile)]) {
+            if (!files[path.normalize(info.classFile)]) {
                 throw new Error(`Invalid App package. Could not find the classFile (${info.classFile}) file.`);
             }
             const languageContent = this.getLanguageContent(zip);
-            // Compile all the typescript files to javascript
-            const result = compiler.toJs(info, tsFiles);
-            tsFiles = result.files;
-            const compiledFiles = {};
-            Object.keys(tsFiles).forEach((name) => {
-                const norm = path.normalize(name);
-                compiledFiles[norm.replace(/\./g, '$')] = tsFiles[norm].compiled;
-            });
             // Get the icon's content
             const iconFile = this.getIconFile(zip, info.iconFile);
             if (iconFile) {
                 info.iconFileContent = iconFile;
             }
+            const implemented = new _1.AppImplements();
+            if (Array.isArray(info.implements)) {
+                info.implements.forEach((interfaceName) => implemented.doesImplement(interfaceName));
+            }
             return {
                 info,
-                compiledFiles,
+                files,
                 languageContent,
-                implemented: result.implemented,
-                compilerErrors: result.compilerErrors,
+                implemented,
             };
         });
     }
