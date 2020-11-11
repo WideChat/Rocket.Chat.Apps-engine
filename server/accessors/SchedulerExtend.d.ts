@@ -5,5 +5,5 @@ export declare class SchedulerExtend implements ISchedulerExtend {
     private readonly manager;
     private readonly appId;
     constructor(manager: AppSchedulerManager, appId: string);
-    registerProcessors(processors?: Array<IProcessor>): void;
+    registerProcessors(processors?: Array<IProcessor>): Promise<void>;
 }
