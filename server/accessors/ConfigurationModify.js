@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class ConfigurationModify {
-    constructor(sets, cmds) {
-        this.serverSettings = sets;
-        this.slashCommands = cmds;
+    constructor(serverSettings, slashCommands, scheduler) {
+        this.serverSettings = serverSettings;
+        this.slashCommands = slashCommands;
+        this.scheduler = scheduler;
     }
 }
 exports.ConfigurationModify = ConfigurationModify;

@@ -477,7 +477,7 @@ class AppListenerManager {
             for (const appId of this.listeners.get(metadata_1.AppInterface.IPostRoomUserJoined)) {
                 const app = this.manager.getOneById(appId);
                 if (app.hasMethod(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_JOINED)) {
-                    yield app.call(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_JOINED, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId));
+                    yield app.call(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_JOINED, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId), this.am.getModifier(appId));
                 }
             }
         });

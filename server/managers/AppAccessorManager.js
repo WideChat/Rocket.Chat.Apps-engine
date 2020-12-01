@@ -58,9 +58,7 @@ class AppAccessorManager {
     }
     getConfigurationModify(appId) {
         if (!this.configModifiers.has(appId)) {
-            const sets = new accessors_1.ServerSettingsModify(this.bridges.getServerSettingBridge(), appId);
-            const cmds = new accessors_1.SlashCommandsModify(this.manager.getCommandManager(), appId);
-            this.configModifiers.set(appId, new accessors_1.ConfigurationModify(sets, cmds));
+            this.configModifiers.set(appId, new accessors_1.ConfigurationModify(new accessors_1.ServerSettingsModify(this.bridges.getServerSettingBridge(), appId), new accessors_1.SlashCommandsModify(this.manager.getCommandManager(), appId), new accessors_1.SchedulerModify(this.bridges.getSchedulerBridge(), appId)));
         }
         return this.configModifiers.get(appId);
     }
