@@ -24,10 +24,14 @@ class AppSchedulerManager {
             if (!this.registeredProcessors.get(appId)) {
                 this.registeredProcessors.set(appId, {});
             }
-            this.bridge.registerProcessors(processors.map((processor) => {
+            yield this.bridge.registerProcessors(processors.map((processor) => {
                 const processorId = createProcessorId(processor.id, appId);
                 this.registeredProcessors.get(appId)[processorId] = processor;
-                return { id: processorId, processor: this.wrapProcessor(appId, processorId).bind(this) };
+                return {
+                    id: processorId,
+                    processor: this.wrapProcessor(appId, processorId).bind(this),
+                    startupSetting: processor.startupSetting,
+                };
             }), appId);
         });
     }
