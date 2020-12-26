@@ -18,5 +18,5 @@ export interface IRoomUserTypingContext {
     /**
      * Extra data
      */
-    extraData: { [key: string]: any };
+    data: { [key: string]: any };
 }
