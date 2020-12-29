@@ -153,7 +153,7 @@ class AppManager {
                     // it was compiled or something similar.
                     continue;
                 }
-                yield this.initializeApp(items.get(rl.getID()), rl, true).catch(console.error);
+                yield this.initializeApp(items.get(rl.getID()), rl, false, true).catch(console.error);
             }
             // Let's ensure the required settings are all set
             for (const rl of this.apps.values()) {

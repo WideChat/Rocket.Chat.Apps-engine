@@ -36,6 +36,11 @@ class SchedulerModify {
             this.bridge.cancelAllJobs(this.appId);
         });
     }
+    cancelJobByDataQuery(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.bridge.cancelJobByDataQuery(data, this.appId);
+        });
+    }
 }
 exports.SchedulerModify = SchedulerModify;
 
