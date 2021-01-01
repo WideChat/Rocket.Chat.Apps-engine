@@ -89,6 +89,11 @@ class AppSchedulerManager {
             this.bridge.cancelAllJobs(appId);
         });
     }
+    cancelJobByDataQuery(data, appId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.bridge.cancelJobByDataQuery(data, appId);
+        });
+    }
 }
 exports.AppSchedulerManager = AppSchedulerManager;
 
