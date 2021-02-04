@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Reader = void 0;
 class Reader {
     constructor(env, message, persist, room, user, noti, livechat, upload) {
         this.env = env;

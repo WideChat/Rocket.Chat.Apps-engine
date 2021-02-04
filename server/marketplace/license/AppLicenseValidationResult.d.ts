@@ -5,9 +5,9 @@ export declare class AppLicenseValidationResult {
     private appId;
     addError(field: string, message: string): void;
     addWarning(field: string, message: string): void;
-    readonly hasErrors: boolean;
-    readonly hasWarnings: boolean;
-    readonly hasBeenValidated: boolean;
+    get hasErrors(): boolean;
+    get hasWarnings(): boolean;
+    get hasBeenValidated(): boolean;
     setValidated(validated: boolean): void;
     setAppId(appId: string): void;
     getAppId(): string;

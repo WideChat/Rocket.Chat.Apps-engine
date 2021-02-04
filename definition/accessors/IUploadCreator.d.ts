@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { IUpload } from '../uploads';
 import { IUploadDescriptor } from '../uploads/IUploadDescriptor';
 export interface IUploadCreator {

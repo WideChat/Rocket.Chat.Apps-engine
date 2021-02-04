@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppsEngineException = void 0;
 /**
  * The internal exception from the framework
  *

@@ -15,6 +15,7 @@ import { IServerSettingBridge } from './IServerSettingBridge';
 import { IUiInteractionBridge } from './IUiInteractionBridge';
 import { IUploadBridge } from './IUploadBridge';
 import { IUserBridge } from './IUserBridge';
+export declare type Bridge = IAppCommandBridge | IAppApiBridge | IAppDetailChangesBridge | IEnvironmentalVariableBridge | IHttpBridge | IListenerBridge | ILivechatBridge | IMessageBridge | IPersistenceBridge | IAppActivationBridge | IRoomBridge | IInternalBridge | IServerSettingBridge | IUploadBridge | IUserBridge | IUiInteractionBridge | IAppSchedulerBridge;
 export declare abstract class AppBridges {
     abstract getCommandBridge(): IAppCommandBridge;
     abstract getApiBridge(): IAppApiBridge;

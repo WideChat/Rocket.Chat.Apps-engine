@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StartupType = void 0;
 /**
  * Jobs' startup types
  */

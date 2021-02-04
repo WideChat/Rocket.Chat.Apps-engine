@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserRead = void 0;
 class UserRead {
     constructor(userBridge, appId) {
         this.userBridge = userBridge;
@@ -11,7 +12,7 @@ class UserRead {
     getByUsername(username) {
         return this.userBridge.getByUsername(username, this.appId);
     }
-    getAppUser(appId) {
+    getAppUser(appId = this.appId) {
         return this.userBridge.getAppUser(appId);
     }
 }

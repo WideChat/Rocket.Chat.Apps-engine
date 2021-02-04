@@ -2,7 +2,7 @@ import { IUser, IUserCreationOptions } from '../../definition/users';
 export interface IUserBridge {
     getById(id: string, appId: string): Promise<IUser>;
     getByUsername(username: string, appId: string): Promise<IUser>;
-    getAppUser(appId: string): Promise<IUser | undefined>;
+    getAppUser(appId?: string): Promise<IUser | undefined>;
     getActiveUserCount(): Promise<number>;
     /**
      * Creates a user.

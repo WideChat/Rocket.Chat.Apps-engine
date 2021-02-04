@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Message = void 0;
 const Room_1 = require("../rooms/Room");
 class Message {
     constructor(message, manager) {

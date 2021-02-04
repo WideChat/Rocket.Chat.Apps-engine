@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Room = void 0;
 const PrivateManager = Symbol('RoomPrivateManager');
 class Room {
     constructor(room, manager) {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SettingType = void 0;
 var SettingType;
 (function (SettingType) {
     SettingType["BOOLEAN"] = "boolean";

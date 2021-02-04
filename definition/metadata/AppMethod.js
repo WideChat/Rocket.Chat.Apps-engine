@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppMethod = void 0;
 var AppMethod;
 (function (AppMethod) {
     AppMethod["_API_EXECUTOR"] = "apiExecutor";
@@ -70,6 +71,8 @@ var AppMethod;
     AppMethod["EXECUTE_POST_LIVECHAT_ROOM_TRANSFERRED"] = "executePostLivechatRoomTransferred";
     AppMethod["EXECUTE_POST_LIVECHAT_GUEST_SAVED"] = "executePostLivechatGuestSaved";
     AppMethod["EXECUTE_POST_LIVECHAT_ROOM_SAVED"] = "executePostLivechatRoomSaved";
+    // FileUpload
+    AppMethod["EXECUTE_PRE_FILE_UPLOAD"] = "executePreFileUpload";
 })(AppMethod = exports.AppMethod || (exports.AppMethod = {}));
 
 //# sourceMappingURL=AppMethod.js.map

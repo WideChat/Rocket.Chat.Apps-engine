@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommandHasAlreadyBeenTouchedError = void 0;
 class CommandHasAlreadyBeenTouchedError {
     constructor(command) {
         this.name = 'CommandHasAlreadyBeenTouched';

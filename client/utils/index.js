@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.randomString = void 0;
 /**
  * Generate a random string with the specified length.
  * @param length the length for the generated random string.

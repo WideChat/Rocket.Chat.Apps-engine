@@ -1,3 +1,4 @@
+import { AllowedInternalModules } from '../compiler/modules';
 export declare class Utilities {
     static deepClone<T>(item: T): T;
     static deepFreeze<T>(item: any): T;
@@ -8,8 +9,8 @@ export declare class Utilities {
      */
     static transformFallbackModuleForCustomRequire(moduleName: string): string;
     static transformModuleForCustomRequire(moduleName: string): string;
-    static allowedInternalModuleRequire(moduleName: string): boolean;
+    static allowedInternalModuleRequire(moduleName: string): moduleName is AllowedInternalModules;
     static buildCustomRequire(files: {
         [s: string]: string;
-    }, currentPath?: string): (mod: string) => {};
+    }, appId: string, currentPath?: string): (mod: string) => {};
 }

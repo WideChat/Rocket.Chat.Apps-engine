@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppExternalComponentManager = void 0;
 /**
  * The external component manager for the apps.
  *

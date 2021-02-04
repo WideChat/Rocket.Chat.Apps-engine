@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserNotAllowedException = void 0;
 const _1 = require(".");
 /**
  * This exception informs the host system that an

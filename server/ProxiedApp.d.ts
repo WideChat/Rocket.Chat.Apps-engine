@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import * as vm from 'vm';
 import { IAppAccessors, ILogger } from '../definition/accessors';
 import { App } from '../definition/App';
@@ -8,6 +9,7 @@ import { AppManager } from './AppManager';
 import { AppConsole } from './logging';
 import { AppLicenseValidationResult } from './marketplace/license';
 import { IAppStorageItem } from './storage';
+export declare const ROCKETCHAT_APP_EXECUTION_PREFIX = "$RocketChat_App$";
 export declare class ProxiedApp implements IApp {
     private readonly manager;
     private storageItem;

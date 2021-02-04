@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SlashCommandContext = void 0;
 /**
  * Represents  the slash command's context when a user
  * executes a slash command.

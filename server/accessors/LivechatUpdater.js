@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LivechatUpdater = void 0;
 class LivechatUpdater {
     constructor(bridges, appId) {
         this.bridges = bridges;

@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { IUploadRead } from '../../definition/accessors';
 import { IUpload } from '../../definition/uploads';
 import { IUploadBridge } from '../bridges/IUploadBridge';

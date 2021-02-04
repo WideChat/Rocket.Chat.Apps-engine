@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HttpExtend = void 0;
 class HttpExtend {
     constructor() {
         this.headers = new Map();

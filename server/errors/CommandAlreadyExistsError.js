@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommandAlreadyExistsError = void 0;
 class CommandAlreadyExistsError {
     constructor(command) {
         this.name = 'CommandAlreadyExists';

@@ -1,23 +1,27 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bridges_1 = require("./bridges");
-const compiler_1 = require("./compiler");
-const managers_1 = require("./managers");
-const DisabledApp_1 = require("./misc/DisabledApp");
-const ProxiedApp_1 = require("./ProxiedApp");
-const storage_1 = require("./storage");
+exports.getPermissionsByAppId = exports.AppManager = void 0;
 const AppStatus_1 = require("../definition/AppStatus");
 const metadata_1 = require("../definition/metadata");
 const users_1 = require("../definition/users");
+const bridges_1 = require("./bridges");
+const compiler_1 = require("./compiler");
 const errors_1 = require("./errors");
+const managers_1 = require("./managers");
+const AppPermissionManager_1 = require("./managers/AppPermissionManager");
+const DisabledApp_1 = require("./misc/DisabledApp");
+const AppPermissions_1 = require("./permissions/AppPermissions");
+const ProxiedApp_1 = require("./ProxiedApp");
+const storage_1 = require("./storage");
 class AppManager {
     constructor(rlStorage, logStorage, rlBridges) {
         // Singleton style. There can only ever be one AppManager instance
@@ -78,7 +82,22 @@ class AppManager {
     }
     /** Gets the instance of the Bridge manager. */
     getBridges() {
-        return this.bridges;
+        const handler = {
+            get(target, prop, receiver) {
+                const reflection = Reflect.get(target, prop, receiver);
+                if (typeof prop === 'symbol' || typeof prop === 'number') {
+                    return reflection;
+                }
+                if (typeof target[prop] === 'function' && /^get.+Bridge$/.test(prop)) {
+                    return (...args) => {
+                        const bridge = reflection.apply(target, args);
+                        return AppPermissionManager_1.AppPermissionManager.proxy(bridge);
+                    };
+                }
+                return reflection;
+            },
+        };
+        return new Proxy(this.bridges, handler);
     }
     /** Gets the instance of the listener manager. */
     getListenerManager() {
@@ -246,6 +265,14 @@ class AppManager {
     getOneById(appId) {
         return this.apps.get(appId);
     }
+    getPermissionsById(appId) {
+        const app = this.apps.get(appId);
+        if (!app) {
+            return [];
+        }
+        const { permissionsGranted } = app.getStorageItem();
+        return permissionsGranted || AppPermissions_1.defaultPermissions;
+    }
     enable(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const rl = this.apps.get(id);
@@ -303,8 +330,9 @@ class AppManager {
             return true;
         });
     }
-    add(appPackage, enable = true, marketplaceInfo) {
+    add(appPackage, installationParameters) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { enable = true, marketplaceInfo, permissionsGranted } = installationParameters;
             const aff = new compiler_1.AppFabricationFulfillment();
             const result = yield this.getParser().unpackageApp(appPackage);
             aff.setAppInfo(result.info);
@@ -320,6 +348,7 @@ class AppManager {
                 settings: {},
                 implemented: result.implemented.getValues(),
                 marketplaceInfo,
+                permissionsGranted,
             };
             // Now that is has all been compiled, let's get the
             // the App instance from the source.
@@ -383,7 +412,7 @@ class AppManager {
             return app;
         });
     }
-    update(appPackage) {
+    update(appPackage, permissionsGranted) {
         return __awaiter(this, void 0, void 0, function* () {
             const aff = new compiler_1.AppFabricationFulfillment();
             const result = yield this.getParser().unpackageApp(appPackage);
@@ -406,6 +435,7 @@ class AppManager {
                 settings: old.settings,
                 implemented: result.implemented.getValues(),
                 marketplaceInfo: old.marketplaceInfo,
+                permissionsGranted,
             });
             // Now that is has all been compiled, let's get the
             // the App instance from the source.
@@ -577,7 +607,6 @@ class AppManager {
                 if (e instanceof errors_1.InvalidLicenseError) {
                     status = AppStatus_1.AppStatus.INVALID_LICENSE_DISABLED;
                 }
-                console.error(e);
                 this.commandManager.unregisterCommands(storageItem.id);
                 this.externalComponentManager.unregisterExternalComponents(storageItem.id);
                 this.apiManager.unregisterApis(storageItem.id);
@@ -698,5 +727,13 @@ class AppManager {
     }
 }
 exports.AppManager = AppManager;
+const getPermissionsByAppId = (appId) => {
+    if (!AppManager.Instance) {
+        console.error('AppManager should be instantiated first');
+        return [];
+    }
+    return AppManager.Instance.getPermissionsById(appId);
+};
+exports.getPermissionsByAppId = getPermissionsByAppId;
 
 //# sourceMappingURL=AppManager.js.map

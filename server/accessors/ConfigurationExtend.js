@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConfigurationExtend = void 0;
 class ConfigurationExtend {
     constructor(https, sets, cmds, api, externalComponents, scheduler) {
         this.http = https;

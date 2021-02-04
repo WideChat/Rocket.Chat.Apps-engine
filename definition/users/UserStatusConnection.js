@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserStatusConnection = void 0;
 var UserStatusConnection;
 (function (UserStatusConnection) {
     UserStatusConnection["OFFLINE"] = "offline";

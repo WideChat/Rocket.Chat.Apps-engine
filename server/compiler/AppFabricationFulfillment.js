@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppFabricationFulfillment = void 0;
 const license_1 = require("../marketplace/license");
 class AppFabricationFulfillment {
     constructor() {

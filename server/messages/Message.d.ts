@@ -22,6 +22,7 @@ export declare class Message implements IMessage {
         [key: string]: any;
     };
     private _ROOM;
-    room: Room;
+    get room(): Room;
+    set room(room: Room);
     constructor(message: IMessage, manager: AppManager);
 }

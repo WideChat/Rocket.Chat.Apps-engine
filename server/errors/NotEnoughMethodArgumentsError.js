@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotEnoughMethodArgumentsError = void 0;
 class NotEnoughMethodArgumentsError {
     constructor(method, requiredCount, providedCount) {
         this.name = 'NotEnoughMethodArgumentsError';

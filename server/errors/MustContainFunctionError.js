@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MustContainFunctionError = void 0;
 class MustContainFunctionError {
     constructor(fileName, funcName) {
         this.name = 'MustContainFunction';
