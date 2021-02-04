@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LivechatRead = void 0;
 class LivechatRead {
     constructor(livechatBridge, appId) {
         this.livechatBridge = livechatBridge;

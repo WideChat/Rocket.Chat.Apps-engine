@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RocketChatAssociationRecord = exports.RocketChatAssociationModel = void 0;
 var RocketChatAssociationModel;
 (function (RocketChatAssociationModel) {
     RocketChatAssociationModel["ROOM"] = "room";

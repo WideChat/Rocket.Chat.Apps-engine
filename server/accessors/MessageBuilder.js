@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageBuilder = void 0;
 const metadata_1 = require("../../definition/metadata");
 const uikit_1 = require("../../definition/uikit");
 class MessageBuilder {

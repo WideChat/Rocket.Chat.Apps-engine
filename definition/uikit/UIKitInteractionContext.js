@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UIKitViewCloseInteractionContext = exports.UIKitViewSubmitInteractionContext = exports.UIKitBlockInteractionContext = exports.UIKitInteractionContext = void 0;
 const UIKitInteractionResponder_1 = require("./UIKitInteractionResponder");
 class UIKitInteractionContext {
     constructor(baseContext) {

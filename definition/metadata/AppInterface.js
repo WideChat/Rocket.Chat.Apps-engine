@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppInterface = void 0;
 var AppInterface;
 (function (AppInterface) {
     // Messages
@@ -41,6 +42,8 @@ var AppInterface;
     AppInterface["IPostLivechatRoomTransferred"] = "IPostLivechatRoomTransferred";
     AppInterface["IPostLivechatGuestSaved"] = "IPostLivechatGuestSaved";
     AppInterface["IPostLivechatRoomSaved"] = "IPostLivechatRoomSaved";
+    // FileUpload
+    AppInterface["IPreFileUpload"] = "IPreFileUpload";
 })(AppInterface = exports.AppInterface || (exports.AppInterface = {}));
 
 //# sourceMappingURL=AppInterface.js.map

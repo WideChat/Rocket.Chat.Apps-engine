@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SlashCommandPreviewItemType = void 0;
 var SlashCommandPreviewItemType;
 (function (SlashCommandPreviewItemType) {
     /** Represents image preview. Could be `png`, `gif`, etc. */

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Modify = void 0;
 const ModifyCreator_1 = require("./ModifyCreator");
 const ModifyExtender_1 = require("./ModifyExtender");
 const ModifyUpdater_1 = require("./ModifyUpdater");

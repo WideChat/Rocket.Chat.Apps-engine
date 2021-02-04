@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ApiEndpoint = void 0;
 const accessors_1 = require("../accessors");
 /** Represents an api endpoint that is being provided. */
 class ApiEndpoint {

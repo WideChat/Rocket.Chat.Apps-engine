@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserBuilder = void 0;
 const metadata_1 = require("../../definition/metadata");
 class UserBuilder {
     constructor(user) {

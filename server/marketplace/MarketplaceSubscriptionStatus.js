@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MarketplaceSubscriptionStatus = void 0;
 var MarketplaceSubscriptionStatus;
 (function (MarketplaceSubscriptionStatus) {
     // PurchaseSubscriptionStatusTrialing is when the subscription is in the trial phase

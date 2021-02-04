@@ -7,5 +7,5 @@ export declare class UserRead implements IUserRead {
     constructor(userBridge: IUserBridge, appId: string);
     getById(id: string): Promise<IUser>;
     getByUsername(username: string): Promise<IUser>;
-    getAppUser(appId: string): Promise<IUser | undefined>;
+    getAppUser(appId?: string): Promise<IUser | undefined>;
 }

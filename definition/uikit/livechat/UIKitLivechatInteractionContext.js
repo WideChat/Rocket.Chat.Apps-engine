@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UIKitLivechatBlockInteractionContext = exports.UIKitLivechatInteractionContext = void 0;
 const UIKitInteractionResponder_1 = require("../UIKitInteractionResponder");
 class UIKitLivechatInteractionContext {
     constructor(baseContext) {

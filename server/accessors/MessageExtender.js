@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageExtender = void 0;
 const metadata_1 = require("../../definition/metadata");
 const Utilities_1 = require("../misc/Utilities");
 class MessageExtender {
@@ -16,6 +17,9 @@ class MessageExtender {
         }
         if (this.msg.customFields[key]) {
             throw new Error(`The message already contains a custom field by the key: ${key}`);
+        }
+        if (key.includes('.')) {
+            throw new Error(`The given key contains a period, which is not allowed. Key: ${key}`);
         }
         this.msg.customFields[key] = value;
         return this;

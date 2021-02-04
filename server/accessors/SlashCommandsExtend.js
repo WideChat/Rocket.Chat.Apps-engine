@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SlashCommandsExtend = void 0;
 class SlashCommandsExtend {
     constructor(manager, appId) {
         this.manager = manager;

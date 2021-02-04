@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UIKitIncomingInteractionType = void 0;
 var UIKitIncomingInteractionType;
 (function (UIKitIncomingInteractionType) {
     UIKitIncomingInteractionType["BLOCK"] = "blockAction";

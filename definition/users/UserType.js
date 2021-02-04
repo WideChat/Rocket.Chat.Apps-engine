@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserType = void 0;
 var UserType;
 (function (UserType) {
     /** A user type for Rocket.Chat apps. */

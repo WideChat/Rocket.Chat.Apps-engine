@@ -32,5 +32,6 @@ export declare enum AppInterface {
     IPostLivechatAgentUnassigned = "IPostLivechatAgentUnassigned",
     IPostLivechatRoomTransferred = "IPostLivechatRoomTransferred",
     IPostLivechatGuestSaved = "IPostLivechatGuestSaved",
-    IPostLivechatRoomSaved = "IPostLivechatRoomSaved"
+    IPostLivechatRoomSaved = "IPostLivechatRoomSaved",
+    IPreFileUpload = "IPreFileUpload"
 }

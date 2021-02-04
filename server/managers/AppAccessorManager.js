@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppAccessorManager = void 0;
 const accessors_1 = require("../accessors");
 class AppAccessorManager {
     constructor(manager) {

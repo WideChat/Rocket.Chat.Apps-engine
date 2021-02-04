@@ -24,9 +24,10 @@ export declare class Room implements IRoom {
     /**
      * @deprecated
      */
-    usernames: Array<string>;
+    get usernames(): Array<string>;
+    set usernames(usernames: Array<string>);
     constructor(room: IRoom, manager: AppManager);
-    readonly value: object;
+    get value(): object;
     toJSON(): object;
     toString(): object;
     valueOf(): object;

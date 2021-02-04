@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.EnvironmentRead = void 0;
 class EnvironmentRead {
     constructor(settings, serverSettings, envRead) {
         this.settings = settings;

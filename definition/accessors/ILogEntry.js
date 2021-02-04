@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LogMessageSeverity = void 0;
 var LogMessageSeverity;
 (function (LogMessageSeverity) {
     LogMessageSeverity["DEBUG"] = "debug";

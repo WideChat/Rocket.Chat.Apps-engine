@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LivechatMessageBuilder = void 0;
 const metadata_1 = require("../../definition/metadata");
 const rooms_1 = require("../../definition/rooms");
 const MessageBuilder_1 = require("./MessageBuilder");

@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { IUploadCreator } from '../../definition/accessors';
 import { IUpload } from '../../definition/uploads';
 import { IUploadDescriptor } from '../../definition/uploads/IUploadDescriptor';

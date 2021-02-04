@@ -1,8 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppConsole = void 0;
 const stackTrace = require("stack-trace");
 const accessors_1 = require("../../definition/accessors");
 class AppConsole {
+    constructor(method) {
+        this.method = method;
+        this.entries = new Array();
+        this.start = new Date();
+    }
     static toStorageEntry(appId, logger) {
         return {
             appId,
@@ -13,11 +19,6 @@ class AppConsole {
             totalTime: logger.getTotalTime(),
             _createdAt: new Date(),
         };
-    }
-    constructor(method) {
-        this.method = method;
-        this.entries = new Array();
-        this.start = new Date();
     }
     debug(...items) {
         this.addEntry(accessors_1.LogMessageSeverity.DEBUG, this.getFunc(stackTrace.get()), ...items);

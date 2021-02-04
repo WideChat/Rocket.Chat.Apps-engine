@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RoomBuilder = void 0;
 const metadata_1 = require("../../definition/metadata");
 class RoomBuilder {
     constructor(data) {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatErrorInteraction = exports.formatModalInteraction = void 0;
 const IUIKitInteractionType_1 = require("./IUIKitInteractionType");
 const IUIKitView_1 = require("./IUIKitView");
 const uuid = require("uuid/v1");

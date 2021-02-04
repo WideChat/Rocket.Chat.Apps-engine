@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ApiExtend = void 0;
 class ApiExtend {
     constructor(manager, appId) {
         this.manager = manager;

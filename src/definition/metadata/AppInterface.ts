@@ -38,4 +38,6 @@ export enum AppInterface {
     IPostLivechatRoomTransferred = 'IPostLivechatRoomTransferred',
     IPostLivechatGuestSaved = 'IPostLivechatGuestSaved',
     IPostLivechatRoomSaved = 'IPostLivechatRoomSaved',
+    // FileUpload
+    IPreFileUpload = 'IPreFileUpload',
 }

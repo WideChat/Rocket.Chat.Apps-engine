@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { IUpload } from '../../definition/uploads';
 import { IUploadDetails } from '../../definition/uploads/IUploadDetails';
 export interface IUploadBridge {

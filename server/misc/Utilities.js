@@ -1,15 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Utilities = void 0;
 const cloneDeep = require("lodash.clonedeep");
 const path = require("path");
 const vm = require("vm");
-var AllowedInternalModules;
-(function (AllowedInternalModules) {
-    AllowedInternalModules[AllowedInternalModules["path"] = 0] = "path";
-    AllowedInternalModules[AllowedInternalModules["url"] = 1] = "url";
-    AllowedInternalModules[AllowedInternalModules["crypto"] = 2] = "crypto";
-    AllowedInternalModules[AllowedInternalModules["buffer"] = 3] = "buffer";
-})(AllowedInternalModules || (AllowedInternalModules = {}));
+const modules_1 = require("../compiler/modules");
 class Utilities {
     static deepClone(item) {
         return cloneDeep(item);
@@ -38,9 +33,9 @@ class Utilities {
         return path.normalize(moduleName).replace(/\.\.?\//g, '').replace(/^\//, '') + '.js';
     }
     static allowedInternalModuleRequire(moduleName) {
-        return moduleName in AllowedInternalModules;
+        return moduleName in modules_1.AllowedInternalModules;
     }
-    static buildCustomRequire(files, currentPath = '.') {
+    static buildCustomRequire(files, appId, currentPath = '.') {
         return function _requirer(mod) {
             // Keep compatibility with apps importing apps-ts-definition
             if (mod.startsWith('@rocket.chat/apps-ts-definition/')) {
@@ -54,7 +49,7 @@ class Utilities {
                 return require(mod);
             }
             if (Utilities.allowedInternalModuleRequire(mod)) {
-                return require(mod);
+                return modules_1.requireNativeModule(mod, appId);
             }
             if (currentPath !== '.') {
                 mod = path.join(currentPath, mod);
@@ -66,7 +61,7 @@ class Utilities {
             if (filename) {
                 fileExport = {};
                 const context = vm.createContext({
-                    require: Utilities.buildCustomRequire(files, path.dirname(filename) + '/'),
+                    require: Utilities.buildCustomRequire(files, appId, path.dirname(filename) + '/'),
                     console,
                     exports: fileExport,
                     process: {},

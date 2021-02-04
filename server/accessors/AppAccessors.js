@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppAccessors = void 0;
 class AppAccessors {
     constructor(manager, appId) {
         this.appId = appId;

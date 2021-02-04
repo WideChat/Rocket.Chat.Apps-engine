@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppStatusUtils = exports.AppStatusUtilsDef = exports.AppStatus = void 0;
 var AppStatus;
 (function (AppStatus) {
     /** The status is known, aka not been constructed the proper way. */

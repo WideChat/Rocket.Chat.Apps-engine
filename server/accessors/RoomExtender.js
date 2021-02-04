@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RoomExtender = void 0;
 const metadata_1 = require("../../definition/metadata");
 const Utilities_1 = require("../misc/Utilities");
 class RoomExtender {
@@ -14,6 +15,9 @@ class RoomExtender {
         }
         if (this.room.customFields[key]) {
             throw new Error(`The room already contains a custom field by the key: ${key}`);
+        }
+        if (key.includes('.')) {
+            throw new Error(`The given key contains a period, which is not allowed. Key: ${key}`);
         }
         this.room.customFields[key] = value;
         return this;

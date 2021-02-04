@@ -61,5 +61,6 @@ export declare enum AppMethod {
     EXECUTE_POST_LIVECHAT_AGENT_UNASSIGNED = "executePostLivechatAgentUnassigned",
     EXECUTE_POST_LIVECHAT_ROOM_TRANSFERRED = "executePostLivechatRoomTransferred",
     EXECUTE_POST_LIVECHAT_GUEST_SAVED = "executePostLivechatGuestSaved",
-    EXECUTE_POST_LIVECHAT_ROOM_SAVED = "executePostLivechatRoomSaved"
+    EXECUTE_POST_LIVECHAT_ROOM_SAVED = "executePostLivechatRoomSaved",
+    EXECUTE_PRE_FILE_UPLOAD = "executePreFileUpload"
 }

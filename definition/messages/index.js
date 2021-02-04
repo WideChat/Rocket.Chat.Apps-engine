@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageProcessingType = exports.MessageActionType = exports.MessageActionButtonsAlignment = void 0;
 const MessageActionButtonsAlignment_1 = require("./MessageActionButtonsAlignment");
-exports.MessageActionButtonsAlignment = MessageActionButtonsAlignment_1.MessageActionButtonsAlignment;
+Object.defineProperty(exports, "MessageActionButtonsAlignment", { enumerable: true, get: function () { return MessageActionButtonsAlignment_1.MessageActionButtonsAlignment; } });
 const MessageActionType_1 = require("./MessageActionType");
-exports.MessageActionType = MessageActionType_1.MessageActionType;
+Object.defineProperty(exports, "MessageActionType", { enumerable: true, get: function () { return MessageActionType_1.MessageActionType; } });
 const MessageProcessingType_1 = require("./MessageProcessingType");
-exports.MessageProcessingType = MessageProcessingType_1.MessageProcessingType;
+Object.defineProperty(exports, "MessageProcessingType", { enumerable: true, get: function () { return MessageProcessingType_1.MessageProcessingType; } });
 
 //# sourceMappingURL=index.js.map

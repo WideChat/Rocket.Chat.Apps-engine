@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UIKitInteractionResponder = void 0;
 const IUIKitInteractionType_1 = require("./IUIKitInteractionType");
 const UIKitInteractionPayloadFormatter_1 = require("./UIKitInteractionPayloadFormatter");
 class UIKitInteractionResponder {

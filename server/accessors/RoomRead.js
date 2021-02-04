@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RoomRead = void 0;
 class RoomRead {
     constructor(roomBridge, appId) {
         this.roomBridge = roomBridge;
