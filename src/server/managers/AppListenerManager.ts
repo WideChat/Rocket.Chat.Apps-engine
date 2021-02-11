@@ -3,7 +3,7 @@ import { IExternalComponent } from '../../definition/externalComponent';
 import { ILivechatEventContext, ILivechatRoom, ILivechatTransferEventContext, IVisitor } from '../../definition/livechat';
 import { IMessage } from '../../definition/messages';
 import { AppInterface, AppMethod } from '../../definition/metadata';
-import { IRoom, IRoomUserJoinedContext } from '../../definition/rooms';
+import { IRoom, IRoomUserJoinedContext, IRoomUserTypingContext } from '../../definition/rooms';
 import { IUIKitIncomingInteraction, IUIKitResponse, IUIKitView, UIKitIncomingInteractionType } from '../../definition/uikit';
 import { IUIKitLivechatIncomingInteraction, UIKitLivechatBlockInteractionContext } from '../../definition/uikit/livechat';
 import { IUIKitIncomingInteractionMessageContainer, IUIKitIncomingInteractionModalContainer } from '../../definition/uikit/UIKitIncomingInteractionContainer';
@@ -32,7 +32,8 @@ type EventData = (
     ILivechatEventContext |
     IRoomUserJoinedContext |
     ILivechatTransferEventContext |
-    IFileUploadContext
+    IFileUploadContext |
+    IRoomUserTypingContext
 );
 
 type EventReturn = (
@@ -185,6 +186,8 @@ export class AppListenerManager {
                 return this.executePreRoomUserJoined(data as IRoomUserJoinedContext);
             case AppInterface.IPostRoomUserJoined:
                 return this.executePostRoomUserJoined(data as IRoomUserJoinedContext);
+            case AppInterface.IRoomUserTyping:
+                return this.executeOnRoomUserTyping(data as IRoomUserTypingContext);
             // External Components
             case AppInterface.IPostExternalComponentOpened:
                 this.executePostExternalComponentOpened(data as IExternalComponent);
@@ -749,6 +752,27 @@ export class AppListenerManager {
                     this.am.getHttp(appId),
                     this.am.getPersistence(appId),
                     this.am.getModifier(appId),
+                );
+            }
+        }
+    }
+
+    private async executeOnRoomUserTyping(externalData: IRoomUserTypingContext): Promise<void> {
+        const data = Utilities.deepClone(externalData);
+
+        Utilities.deepFreeze(data.roomId);
+        Utilities.deepFreeze(data.typing);
+        Utilities.deepFreeze(data.username);
+
+        for (const appId of this.listeners.get(AppInterface.IRoomUserTyping)) {
+            const app = this.manager.getOneById(appId);
+
+            if (app.hasMethod(AppMethod.EXECUTE_ON_ROOM_USER_TYPING)) {
+                await app.call(AppMethod.EXECUTE_ON_ROOM_USER_TYPING,
+                    data,
+                    this.am.getReader(appId),
+                    this.am.getHttp(appId),
+                    this.am.getPersistence(appId),
                 );
             }
         }

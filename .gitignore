@@ -49,9 +49,11 @@ jspm_packages
 /dev-dist/
 /data/
 /tests/test-data/dbs
-/client
-/definition
-/server
-/lib
+
+# Commented this to directly use github repo as dependecy in package.json
+# /client
+# /definition
+# /server
+# /lib
 
 .DS_Store
