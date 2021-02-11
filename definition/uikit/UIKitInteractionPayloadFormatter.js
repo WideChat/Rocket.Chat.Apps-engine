@@ -13,7 +13,7 @@ function formatModalInteraction(view, context) {
         type,
         triggerId: context.triggerId,
         appId: context.appId,
-        view: Object.assign({ appId: context.appId, type: IUIKitView_1.UIKitViewType.MODAL, id: view.id ? view.id : uuid() }, view),
+        view: Object.assign(Object.assign({ appId: context.appId, type: IUIKitView_1.UIKitViewType.MODAL, id: view.id ? view.id : uuid() }, view), { showIcon: true }),
     };
 }
 exports.formatModalInteraction = formatModalInteraction;
