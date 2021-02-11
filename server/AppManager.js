@@ -191,6 +191,7 @@ class AppManager {
                 }
                 else if (!AppStatus_1.AppStatusUtils.isError(app.getStatus())) {
                     this.listenerManager.lockEssentialEvents(app);
+                    yield this.schedulerManager.cancelAllJobs(app.getID());
                 }
             }
             this.isLoaded = true;
