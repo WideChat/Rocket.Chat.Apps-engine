@@ -13,6 +13,12 @@ class MessageBuilder {
         this.msg = data;
         return this;
     }
+    setUpdateData(data, editor) {
+        this.msg = data;
+        this.msg.editor = editor;
+        this.msg.editedAt = new Date();
+        return this;
+    }
     setThreadId(threadId) {
         this.msg.threadId = threadId;
         return this;

@@ -1,7 +1,10 @@
 import { ILivechatMessage, ILivechatRoom, ILivechatTransferData, IVisitor } from '../../../definition/livechat';
 import { IUser } from '../../../definition/users';
 export declare const AppLivechatBridge: {
+    isOnline(departmentId?: string, appId?: string): void;
+    isOnlineAsync(departmentId?: string, appId?: string): void;
     updateMessage(message: ILivechatMessage, appId: string): void;
+    createMessage(message: ILivechatMessage, appId: string): void;
     createVisitor(visitor: IVisitor, appId: string): void;
     findVisitors(query: object, appId: string): void;
     findVisitorById(id: string, appId: string): void;

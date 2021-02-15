@@ -12,10 +12,10 @@ class LivechatRead {
      */
     isOnline(departmentId) {
         console.warn('The `LivechatRead.isOnline` method is deprecated and won\'t behave as intended. Please use `LivechatRead.isOnlineAsync` instead');
-        return this.livechatBridge.isOnline(departmentId);
+        return this.livechatBridge.isOnline(departmentId, this.appId);
     }
     isOnlineAsync(departmentId) {
-        return this.livechatBridge.isOnlineAsync(departmentId);
+        return this.livechatBridge.isOnlineAsync(departmentId, this.appId);
     }
     getLivechatRooms(visitor, departmentId) {
         return this.livechatBridge.findRooms(visitor, departmentId, this.appId);

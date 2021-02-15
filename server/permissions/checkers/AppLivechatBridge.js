@@ -5,7 +5,31 @@ const PermissionDeniedError_1 = require("../../errors/PermissionDeniedError");
 const AppPermissionManager_1 = require("../../managers/AppPermissionManager");
 const AppPermissions_1 = require("../AppPermissions");
 exports.AppLivechatBridge = {
+    isOnline(departmentId, appId) {
+        if (!AppPermissionManager_1.AppPermissionManager.hasPermission(appId, AppPermissions_1.AppPermissions['livechat-status'].read)) {
+            throw new PermissionDeniedError_1.PermissionDeniedError({
+                appId,
+                missingPermissions: [AppPermissions_1.AppPermissions['livechat-status'].read],
+            });
+        }
+    },
+    isOnlineAsync(departmentId, appId) {
+        if (!AppPermissionManager_1.AppPermissionManager.hasPermission(appId, AppPermissions_1.AppPermissions['livechat-status'].read)) {
+            throw new PermissionDeniedError_1.PermissionDeniedError({
+                appId,
+                missingPermissions: [AppPermissions_1.AppPermissions['livechat-status'].read],
+            });
+        }
+    },
     updateMessage(message, appId) {
+        if (!AppPermissionManager_1.AppPermissionManager.hasPermission(appId, AppPermissions_1.AppPermissions['livechat-message'].write)) {
+            throw new PermissionDeniedError_1.PermissionDeniedError({
+                appId,
+                missingPermissions: [AppPermissions_1.AppPermissions['livechat-message'].write],
+            });
+        }
+    },
+    createMessage(message, appId) {
         if (!AppPermissionManager_1.AppPermissionManager.hasPermission(appId, AppPermissions_1.AppPermissions['livechat-message'].write)) {
             throw new PermissionDeniedError_1.PermissionDeniedError({
                 appId,
