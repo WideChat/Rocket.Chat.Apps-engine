@@ -26,6 +26,9 @@ exports.AppSchedulerBridge = {
         return this.hasGeneralPermission(appId);
     },
     cancelAllJobs(appId) { },
+    cancelJobByDataQuery(data, appId) {
+        return this.hasGeneralPermission(appId);
+    },
 };
 
 //# sourceMappingURL=AppSchedulerBridge.js.map

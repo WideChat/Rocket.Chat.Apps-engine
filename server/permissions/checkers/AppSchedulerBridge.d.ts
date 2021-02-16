@@ -6,4 +6,5 @@ export declare const AppSchedulerBridge: {
     scheduleRecurring(job: IRecurringSchedule, appId: string): void;
     cancelJob(jobId: string, appId: string): void;
     cancelAllJobs(appId: string): void;
+    cancelJobByDataQuery(data: object, appId: string): void;
 };
