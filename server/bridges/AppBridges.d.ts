@@ -3,6 +3,7 @@ import { IAppApiBridge } from './IAppApiBridge';
 import { IAppCommandBridge } from './IAppCommandBridge';
 import { IAppDetailChangesBridge } from './IAppDetailChangesBridge';
 import { IAppSchedulerBridge } from './IAppSchedulerBridge';
+import { ICloudWorkspaceBridge } from './ICloudWorkspaceBridge';
 import { IEnvironmentalVariableBridge } from './IEnvironmentalVariableBridge';
 import { IHttpBridge } from './IHttpBridge';
 import { IInternalBridge } from './IInternalBridge';
@@ -34,4 +35,5 @@ export declare abstract class AppBridges {
     abstract getUserBridge(): IUserBridge;
     abstract getUiInteractionBridge(): IUiInteractionBridge;
     abstract getSchedulerBridge(): IAppSchedulerBridge;
+    abstract getCloudWorkspaceBridge(): ICloudWorkspaceBridge;
 }

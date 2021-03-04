@@ -1,0 +1,1 @@
+{"version":3,"sources":["src/definition/accessors/ICloudWorkspaceRead.ts"],"names":[],"mappings":"","file":"ICloudWorkspaceRead.js","sourcesContent":["import { IWorkspaceToken } from '../cloud/IWorkspaceToken';\n\nexport interface ICloudWorkspaceRead {\n    getWorkspaceToken(scope: string): Promise<IWorkspaceToken>;\n}\n"]}

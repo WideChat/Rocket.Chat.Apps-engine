@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppAccessorManager = void 0;
 const accessors_1 = require("../accessors");
+const CloudWorkspaceRead_1 = require("../accessors/CloudWorkspaceRead");
 class AppAccessorManager {
     constructor(manager) {
         this.manager = manager;
@@ -73,7 +74,8 @@ class AppAccessorManager {
             const noti = new accessors_1.Notifier(this.bridges.getUserBridge(), this.bridges.getMessageBridge(), appId);
             const livechat = new accessors_1.LivechatRead(this.bridges.getLivechatBridge(), appId);
             const upload = new accessors_1.UploadRead(this.bridges.getUploadBridge(), appId);
-            this.readers.set(appId, new accessors_1.Reader(env, msg, persist, room, user, noti, livechat, upload));
+            const cloud = new CloudWorkspaceRead_1.CloudWorkspaceRead(this.bridges.getCloudWorkspaceBridge(), appId);
+            this.readers.set(appId, new accessors_1.Reader(env, msg, persist, room, user, noti, livechat, upload, cloud));
         }
         return this.readers.get(appId);
     }

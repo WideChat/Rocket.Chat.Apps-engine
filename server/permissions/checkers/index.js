@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.permissionCheckers = void 0;
 const AppActivationBridge_1 = require("./AppActivationBridge");
 const AppApisBridge_1 = require("./AppApisBridge");
+const AppCloudBridge_1 = require("./AppCloudBridge");
 const AppCommandsBridge_1 = require("./AppCommandsBridge");
 const AppDetailChangesBridge_1 = require("./AppDetailChangesBridge");
 const AppEnvironmentalVariableBridge_1 = require("./AppEnvironmentalVariableBridge");
@@ -21,6 +22,7 @@ exports.permissionCheckers = {
     AppActivationBridge: AppActivationBridge_1.AppActivationBridge,
     AppApisBridge: AppApisBridge_1.AppApisBridge,
     AppCommandsBridge: AppCommandsBridge_1.AppCommandsBridge,
+    AppCloudBridge: AppCloudBridge_1.AppCloudBridge,
     AppDetailChangesBridge: AppDetailChangesBridge_1.AppDetailChangesBridge,
     AppEnvironmentalVariableBridge: AppEnvironmentalVariableBridge_1.AppEnvironmentalVariableBridge,
     AppHttpBridge: AppHttpBridge_1.AppHttpBridge,

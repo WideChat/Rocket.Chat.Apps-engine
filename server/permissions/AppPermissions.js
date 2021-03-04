@@ -66,6 +66,9 @@ exports.AppPermissions = {
     'env': {
         read: { name: 'env.read' },
     },
+    'cloud': {
+        'workspace-token': { name: 'cloud.workspace-token', scopes: [] },
+    },
     // Internal permissions
     'scheduler': {
         default: { name: 'scheduler' },

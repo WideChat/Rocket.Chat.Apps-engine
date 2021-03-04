@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Reader = void 0;
 class Reader {
-    constructor(env, message, persist, room, user, noti, livechat, upload) {
+    constructor(env, message, persist, room, user, noti, livechat, upload, cloud) {
         this.env = env;
         this.message = message;
         this.persist = persist;
@@ -11,6 +11,7 @@ class Reader {
         this.noti = noti;
         this.livechat = livechat;
         this.upload = upload;
+        this.cloud = cloud;
     }
     getEnvironmentReader() {
         return this.env;
@@ -35,6 +36,9 @@ class Reader {
     }
     getUploadReader() {
         return this.upload;
+    }
+    getCloudWorkspaceReader() {
+        return this.cloud;
     }
 }
 exports.Reader = Reader;
