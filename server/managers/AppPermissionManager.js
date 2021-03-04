@@ -38,14 +38,17 @@ class AppPermissionManager {
      * It returns the declaration of the permission if the app declared, or it returns `undefined`.
      */
     static hasPermission(appId, permission) {
-        const permissions = AppManager_1.getPermissionsByAppId(appId);
-        return permissions.find(({ name = '' }) => name === permission.name);
+        const grantedPermission = AppManager_1.getPermissionsByAppId(appId).find(({ name = '' }) => name === permission.name);
+        if (!grantedPermission) {
+            return undefined;
+        }
+        return grantedPermission;
     }
     static checkPermission(call) {
         const { bridge, method, args } = call;
         if (!checkers_1.permissionCheckers[bridge] || !checkers_1.permissionCheckers[bridge][method]) {
             throw new Error(`No permission checker found for the bridge method "${bridge}.${method}"\n`
-                + 'Please create a new cheker one under the permissionChekers folder to fix the issue.');
+                + 'Please create a new checker one under the permissionCheckers folder to fix the issue.');
         }
         try {
             checkers_1.permissionCheckers[bridge][method](...args);

@@ -1,4 +1,4 @@
-import { INetworkingPermission, IPermission } from '../../definition/permissions/IPermission';
+import { INetworkingPermission, IPermission, IWorkspaceTokenPermission } from '../../definition/permissions/IPermission';
 /**
  * @description
  *
@@ -107,6 +107,9 @@ export declare const AppPermissions: {
         read: {
             name: string;
         };
+    };
+    cloud: {
+        'workspace-token': IWorkspaceTokenPermission;
     };
     scheduler: {
         default: {

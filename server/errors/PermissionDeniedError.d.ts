@@ -4,8 +4,9 @@ interface IPermissionDeniedErrorParams {
     missingPermissions: Array<IPermission>;
     methodName?: string;
     reason?: string;
+    message?: string;
 }
 export declare class PermissionDeniedError extends Error {
-    constructor({ appId, missingPermissions, methodName, reason }: IPermissionDeniedErrorParams);
+    constructor({ appId, missingPermissions, methodName, reason, message }: IPermissionDeniedErrorParams);
 }
 export {};
