@@ -7,7 +7,7 @@ export declare class AppPermissionManager {
     /**
      * It returns the declaration of the permission if the app declared, or it returns `undefined`.
      */
-    static hasPermission<P extends IPermission>(appId: string, permission: P): undefined | P;
+    static hasPermission<P extends IPermission>(appId: string, permission: P): P | undefined;
     private static checkPermission;
     private static getCallStack;
 }

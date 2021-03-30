@@ -3,7 +3,7 @@ import { IExternalComponent } from '../../definition/externalComponent';
 import { ILivechatEventContext, ILivechatRoom, ILivechatTransferEventContext, IVisitor } from '../../definition/livechat';
 import { IMessage } from '../../definition/messages';
 import { AppInterface, AppMethod } from '../../definition/metadata';
-import { IRoom, IRoomUserJoinedContext, IRoomUserTypingContext } from '../../definition/rooms';
+import { IRoom, IRoomUserJoinedContext, IRoomUserLeaveContext, IRoomUserTypingContext } from '../../definition/rooms';
 import { IUIKitIncomingInteraction, IUIKitResponse, IUIKitView, UIKitIncomingInteractionType } from '../../definition/uikit';
 import { IUIKitLivechatIncomingInteraction, UIKitLivechatBlockInteractionContext } from '../../definition/uikit/livechat';
 import { IUIKitIncomingInteractionMessageContainer, IUIKitIncomingInteractionModalContainer } from '../../definition/uikit/UIKitIncomingInteractionContainer';
@@ -31,6 +31,7 @@ type EventData = (
     IExternalComponent |
     ILivechatEventContext |
     IRoomUserJoinedContext |
+    IRoomUserLeaveContext |
     ILivechatTransferEventContext |
     IFileUploadContext |
     IRoomUserTypingContext
@@ -186,6 +187,10 @@ export class AppListenerManager {
                 return this.executePreRoomUserJoined(data as IRoomUserJoinedContext);
             case AppInterface.IPostRoomUserJoined:
                 return this.executePostRoomUserJoined(data as IRoomUserJoinedContext);
+            case AppInterface.IPreRoomUserLeave:
+                return this.executePreRoomUserLeave(data as IRoomUserLeaveContext);
+            case AppInterface.IPostRoomUserLeave:
+                return this.executePostRoomUserLeave(data as IRoomUserLeaveContext);
             case AppInterface.IRoomUserTyping:
                 return this.executeOnRoomUserTyping(data as IRoomUserTypingContext);
             // External Components
@@ -757,6 +762,25 @@ export class AppListenerManager {
         }
     }
 
+    private async executePreRoomUserLeave(externalData: IRoomUserLeaveContext): Promise<void> {
+        const data = Utilities.deepClone(externalData);
+
+        data.room = new Room(Utilities.deepFreeze(data.room), this.manager);
+        Utilities.deepFreeze(data.leavingUser);
+
+        for (const appId of this.listeners.get(AppInterface.IPreRoomUserLeave)) {
+            const app = this.manager.getOneById(appId);
+
+            if (app.hasMethod(AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE)) {
+                await app.call(AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE,
+                    data,
+                    this.am.getReader(appId),
+                    this.am.getHttp(appId),
+                    this.am.getPersistence(appId),
+                );
+            }
+        }
+    }
     private async executeOnRoomUserTyping(externalData: IRoomUserTypingContext): Promise<void> {
         const data = Utilities.deepClone(externalData);
 
@@ -773,6 +797,27 @@ export class AppListenerManager {
                     this.am.getReader(appId),
                     this.am.getHttp(appId),
                     this.am.getPersistence(appId),
+                );
+            }
+        }
+    }
+
+    private async executePostRoomUserLeave(externalData: IRoomUserLeaveContext): Promise<void> {
+        const data = Utilities.deepClone(externalData);
+
+        data.room = new Room(Utilities.deepFreeze(data.room), this.manager);
+        Utilities.deepFreeze(data.leavingUser);
+
+        for (const appId of this.listeners.get(AppInterface.IPostRoomUserLeave)) {
+            const app = this.manager.getOneById(appId);
+
+            if (app.hasMethod(AppMethod.EXECUTE_POST_ROOM_USER_LEAVE)) {
+                await app.call(AppMethod.EXECUTE_POST_ROOM_USER_LEAVE,
+                    data,
+                    this.am.getReader(appId),
+                    this.am.getHttp(appId),
+                    this.am.getPersistence(appId),
+                    this.am.getModifier(appId),
                 );
             }
         }

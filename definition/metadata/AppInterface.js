@@ -23,6 +23,8 @@ var AppInterface;
     AppInterface["IPostRoomDeleted"] = "IPostRoomDeleted";
     AppInterface["IPreRoomUserJoined"] = "IPreRoomUserJoined";
     AppInterface["IPostRoomUserJoined"] = "IPostRoomUserJoined";
+    AppInterface["IPreRoomUserLeave"] = "IPreRoomUserLeave";
+    AppInterface["IPostRoomUserLeave"] = "IPostRoomUserLeave";
     AppInterface["IRoomUserTyping"] = "IRoomUserTyping";
     // External Components
     AppInterface["IPostExternalComponentOpened"] = "IPostExternalComponentOpened";

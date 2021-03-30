@@ -131,6 +131,10 @@ class AppListenerManager {
                     return this.executePreRoomUserJoined(data);
                 case metadata_1.AppInterface.IPostRoomUserJoined:
                     return this.executePostRoomUserJoined(data);
+                case metadata_1.AppInterface.IPreRoomUserLeave:
+                    return this.executePreRoomUserLeave(data);
+                case metadata_1.AppInterface.IPostRoomUserLeave:
+                    return this.executePostRoomUserLeave(data);
                 case metadata_1.AppInterface.IRoomUserTyping:
                     return this.executeOnRoomUserTyping(data);
                 // External Components
@@ -487,6 +491,19 @@ class AppListenerManager {
             }
         });
     }
+    executePreRoomUserLeave(externalData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = Utilities_1.Utilities.deepClone(externalData);
+            data.room = new Room_1.Room(Utilities_1.Utilities.deepFreeze(data.room), this.manager);
+            Utilities_1.Utilities.deepFreeze(data.leavingUser);
+            for (const appId of this.listeners.get(metadata_1.AppInterface.IPreRoomUserLeave)) {
+                const app = this.manager.getOneById(appId);
+                if (app.hasMethod(metadata_1.AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE)) {
+                    yield app.call(metadata_1.AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId));
+                }
+            }
+        });
+    }
     executeOnRoomUserTyping(externalData) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = Utilities_1.Utilities.deepClone(externalData);
@@ -497,6 +514,19 @@ class AppListenerManager {
                 const app = this.manager.getOneById(appId);
                 if (app.hasMethod(metadata_1.AppMethod.EXECUTE_ON_ROOM_USER_TYPING)) {
                     yield app.call(metadata_1.AppMethod.EXECUTE_ON_ROOM_USER_TYPING, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId));
+                }
+            }
+        });
+    }
+    executePostRoomUserLeave(externalData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = Utilities_1.Utilities.deepClone(externalData);
+            data.room = new Room_1.Room(Utilities_1.Utilities.deepFreeze(data.room), this.manager);
+            Utilities_1.Utilities.deepFreeze(data.leavingUser);
+            for (const appId of this.listeners.get(metadata_1.AppInterface.IPostRoomUserLeave)) {
+                const app = this.manager.getOneById(appId);
+                if (app.hasMethod(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_LEAVE)) {
+                    yield app.call(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_LEAVE, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId), this.am.getModifier(appId));
                 }
             }
         });

@@ -50,6 +50,8 @@ var AppMethod;
     AppMethod["EXECUTEPOSTROOMDELETED"] = "executePostRoomDeleted";
     AppMethod["EXECUTE_PRE_ROOM_USER_JOINED"] = "executePreRoomUserJoined";
     AppMethod["EXECUTE_POST_ROOM_USER_JOINED"] = "executePostRoomUserJoined";
+    AppMethod["EXECUTE_PRE_ROOM_USER_LEAVE"] = "executePreRoomUserLeave";
+    AppMethod["EXECUTE_POST_ROOM_USER_LEAVE"] = "executePostRoomUserLeave";
     AppMethod["EXECUTE_ON_ROOM_USER_TYPING"] = "executeOnRoomUserTyping";
     // External Component handlers
     AppMethod["EXECUTEPOSTEXTERNALCOMPONENTOPENED"] = "executePostExternalComponentOpened";
