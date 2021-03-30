@@ -97,4 +97,8 @@ export class AppSchedulerManager {
     public async cancelAllJobs(appId: string): Promise<void> {
         this.bridge.cancelAllJobs(appId);
     }
+
+    public async cancelJobByDataQuery(data: object, appId: string): Promise<void> {
+        this.bridge.cancelJobByDataQuery(data, appId);
+    }
 }
