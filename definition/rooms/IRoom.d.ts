@@ -18,6 +18,7 @@ export interface IRoom {
     createdAt?: Date;
     updatedAt?: Date;
     lastModifiedAt?: Date;
+    description?: string;
     customFields?: {
         [key: string]: any;
     };

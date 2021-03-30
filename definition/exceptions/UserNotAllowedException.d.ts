@@ -8,6 +8,7 @@ import { AppsEngineException } from '.';
  * following events:
  * - IPreRoomCreatePrevent
  * - IPreRoomUserJoined
+ * - IPreRoomUserLeave
  */
 export declare class UserNotAllowedException extends AppsEngineException {
 }

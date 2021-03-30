@@ -38,7 +38,7 @@ class AppPermissionManager {
      * It returns the declaration of the permission if the app declared, or it returns `undefined`.
      */
     static hasPermission(appId, permission) {
-        const grantedPermission = AppManager_1.getPermissionsByAppId(appId).find(({ name = '' }) => name === permission.name);
+        const grantedPermission = AppManager_1.getPermissionsByAppId(appId).find(({ name }) => name === permission.name);
         if (!grantedPermission) {
             return undefined;
         }

@@ -11,6 +11,7 @@ const _1 = require(".");
  * following events:
  * - IPreRoomCreatePrevent
  * - IPreRoomUserJoined
+ * - IPreRoomUserLeave
  */
 class UserNotAllowedException extends _1.AppsEngineException {
 }

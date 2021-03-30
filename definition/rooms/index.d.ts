@@ -10,5 +10,8 @@ export { IRoom, RoomType, IPostRoomCreate, IPostRoomDeleted, IPreRoomCreateExten
 export * from './IPreRoomUserJoined';
 export * from './IPostRoomUserJoined';
 export * from './IRoomUserJoinedContext';
+export * from './IPreRoomUserLeave';
+export * from './IPostRoomUserLeave';
+export * from './IRoomUserLeaveContext';
 export * from './IRoomUserTyping';
 export * from './IRoomUserTypingContext';

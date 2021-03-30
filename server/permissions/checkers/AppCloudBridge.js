@@ -8,7 +8,7 @@ exports.AppCloudBridge = {
     getWorkspaceToken(scope, appId) {
         var _a;
         const grantedPermission = AppPermissionManager_1.AppPermissionManager.hasPermission(appId, AppPermissions_1.AppPermissions.cloud['workspace-token']);
-        const isMissingScope = ((_a = grantedPermission.scopes) === null || _a === void 0 ? void 0 : _a.includes(scope)) === false;
+        const isMissingScope = ((_a = grantedPermission === null || grantedPermission === void 0 ? void 0 : grantedPermission.scopes) === null || _a === void 0 ? void 0 : _a.includes(scope)) === false;
         if (scope.startsWith('workspace')) {
             throw new PermissionDeniedError_1.PermissionDeniedError({
                 appId,

@@ -16,6 +16,9 @@ Object.defineProperty(exports, "RoomType", { enumerable: true, get: function () 
 __exportStar(require("./IPreRoomUserJoined"), exports);
 __exportStar(require("./IPostRoomUserJoined"), exports);
 __exportStar(require("./IRoomUserJoinedContext"), exports);
+__exportStar(require("./IPreRoomUserLeave"), exports);
+__exportStar(require("./IPostRoomUserLeave"), exports);
+__exportStar(require("./IRoomUserLeaveContext"), exports);
 __exportStar(require("./IRoomUserTyping"), exports);
 __exportStar(require("./IRoomUserTypingContext"), exports);
 
