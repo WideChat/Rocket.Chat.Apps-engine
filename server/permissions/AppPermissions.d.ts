@@ -102,6 +102,9 @@ export declare const AppPermissions: {
         write: {
             name: string;
         };
+        multiple: {
+            name: string;
+        };
     };
     env: {
         read: {

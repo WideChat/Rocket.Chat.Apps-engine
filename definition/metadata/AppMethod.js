@@ -12,6 +12,8 @@ var AppMethod;
     AppMethod["INITIALIZE"] = "initialize";
     AppMethod["ONENABLE"] = "onEnable";
     AppMethod["ONDISABLE"] = "onDisable";
+    AppMethod["ONINSTALL"] = "onInstall";
+    AppMethod["ONUNINSTALL"] = "onUninstall";
     AppMethod["ONSETTINGUPDATED"] = "onSettingUpdated";
     AppMethod["SETSTATUS"] = "setStatus";
     // Message handlers

@@ -1,5 +1,7 @@
 import { IApiExtend } from './IApiExtend';
 import { IAppAccessors } from './IAppAccessors';
+import { IAppInstallationContext } from './IAppInstallationContext';
+import { IAppUninstallationContext } from './IAppUninstallationContext';
 import { ICloudWorkspaceRead } from './ICloudWorkspaceRead';
 import { IConfigurationExtend } from './IConfigurationExtend';
 import { IConfigurationModify } from './IConfigurationModify';
@@ -41,4 +43,4 @@ import { IUploadCreator } from './IUploadCreator';
 import { IUploadRead } from './IUploadRead';
 import { IUserBuilder } from './IUserBuilder';
 import { IUserRead } from './IUserRead';
-export { HttpStatusCode, IAppAccessors, ICloudWorkspaceRead, IConfigurationExtend, IConfigurationModify, IDiscussionBuilder, IEnvironmentalVariableRead, IEnvironmentRead, IExternalComponentsExtend, IHttp, IHttpExtend, IHttpPreRequestHandler, IHttpPreResponseHandler, IHttpRequest, IHttpResponse, ILivechatCreator, ILivechatMessageBuilder, ILivechatRead, ILivechatUpdater, ILogEntry, ILogger, IMessageBuilder, IMessageExtender, IMessageRead, IModify, IModifyCreator, IModifyExtender, IModifyUpdater, INotifier, IPersistence, IPersistenceRead, IRead, IRoomBuilder, IRoomExtender, IRoomRead, IServerSettingRead, IServerSettingsModify, ISettingRead, ISettingsExtend, ISlashCommandsExtend, ISlashCommandsModify, IUIController, IUploadRead, IUploadCreator, IUserBuilder, IUserRead, LogMessageSeverity, RequestMethod, IApiExtend, ISchedulerModify, ISchedulerExtend, };
+export { HttpStatusCode, IAppAccessors, IAppUninstallationContext, IAppInstallationContext, ICloudWorkspaceRead, IConfigurationExtend, IConfigurationModify, IDiscussionBuilder, IEnvironmentalVariableRead, IEnvironmentRead, IExternalComponentsExtend, IHttp, IHttpExtend, IHttpPreRequestHandler, IHttpPreResponseHandler, IHttpRequest, IHttpResponse, ILivechatCreator, ILivechatMessageBuilder, ILivechatRead, ILivechatUpdater, ILogEntry, ILogger, IMessageBuilder, IMessageExtender, IMessageRead, IModify, IModifyCreator, IModifyExtender, IModifyUpdater, INotifier, IPersistence, IPersistenceRead, IRead, IRoomBuilder, IRoomExtender, IRoomRead, IServerSettingRead, IServerSettingsModify, ISettingRead, ISettingsExtend, ISlashCommandsExtend, ISlashCommandsModify, IUIController, IUploadRead, IUploadCreator, IUserBuilder, IUserRead, LogMessageSeverity, RequestMethod, IApiExtend, ISchedulerModify, ISchedulerExtend, };

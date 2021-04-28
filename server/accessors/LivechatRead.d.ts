@@ -13,6 +13,7 @@ export declare class LivechatRead implements ILivechatRead {
      */
     isOnline(departmentId?: string): boolean;
     isOnlineAsync(departmentId?: string): Promise<boolean>;
+    getDepartmentsEnabledWithAgents(): Promise<Array<IDepartment>>;
     getLivechatRooms(visitor: IVisitor, departmentId?: string): Promise<Array<ILivechatRoom>>;
     /**
      * @deprecated This method does not adhere to the conversion practices applied

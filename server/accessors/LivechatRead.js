@@ -17,6 +17,9 @@ class LivechatRead {
     isOnlineAsync(departmentId) {
         return this.livechatBridge.isOnlineAsync(departmentId, this.appId);
     }
+    getDepartmentsEnabledWithAgents() {
+        return this.livechatBridge.findDepartmentsEnabledWithAgents(this.appId);
+    }
     getLivechatRooms(visitor, departmentId) {
         return this.livechatBridge.findRooms(visitor, departmentId, this.appId);
     }
