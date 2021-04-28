@@ -35,7 +35,23 @@ class Utilities {
     static allowedInternalModuleRequire(moduleName) {
         return moduleName in modules_1.AllowedInternalModules;
     }
-    static buildCustomRequire(files, appId, currentPath = '.') {
+    static shouldLog(setting, level) {
+        return setting >= level;
+    }
+    static getConsole(setting = 0) {
+        return Object.assign(Object.assign({}, console), { debug: (...args) => {
+                return this.shouldLog(setting, 2) && console.debug(...args);
+            }, log: (...args) => {
+                return this.shouldLog(setting, 1) && console.log(...args);
+            }, info: (...args) => {
+                return this.shouldLog(setting, 1) && console.info(...args);
+            }, warn: (...args) => {
+                return this.shouldLog(setting, 1) && console.warn(...args);
+            }, error: (...args) => {
+                return this.shouldLog(setting, 0) && console.error(...args);
+            } });
+    }
+    static buildCustomRequire(files, appId, logSetting = 0, currentPath = '.') {
         return function _requirer(mod) {
             // Keep compatibility with apps importing apps-ts-definition
             if (mod.startsWith('@rocket.chat/apps-ts-definition/')) {
@@ -61,8 +77,8 @@ class Utilities {
             if (filename) {
                 fileExport = {};
                 const context = vm.createContext({
-                    require: Utilities.buildCustomRequire(files, appId, path.dirname(filename) + '/'),
-                    console,
+                    require: Utilities.buildCustomRequire(files, appId, logSetting, path.dirname(filename) + '/'),
+                    console: Utilities.getConsole(logSetting),
                     exports: fileExport,
                     process: {},
                 });
