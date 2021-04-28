@@ -42,7 +42,31 @@ export class Utilities {
         return moduleName in AllowedInternalModules;
     }
 
-    public static buildCustomRequire(files: { [s: string]: string }, appId: string, currentPath: string = '.'): (mod: string) => {} {
+    public static shouldLog(setting: number, level: number) {
+        return setting >= level;
+    }
+    public static getConsole(setting: number = 0) {
+        return {
+            ...console,
+            debug: (...args: any) => {
+                return this.shouldLog(setting, 2) && console.debug(...args);
+            },
+            log: (...args: any) => {
+                return this.shouldLog(setting, 1) && console.log(...args);
+            },
+            info: (...args: any) => {
+                return this.shouldLog(setting, 1) && console.info(...args);
+            },
+            warn: (...args: any) => {
+                return this.shouldLog(setting, 1) && console.warn(...args);
+            },
+            error: (...args: any) => {
+                return this.shouldLog(setting, 0) && console.error(...args);
+            },
+        };
+    }
+
+    public static buildCustomRequire(files: { [s: string]: string }, appId: string, logSetting: number = 0, currentPath: string = '.' ): (mod: string) => {} {
         return function _requirer(mod: string): any {
             // Keep compatibility with apps importing apps-ts-definition
             if (mod.startsWith('@rocket.chat/apps-ts-definition/')) {
@@ -75,8 +99,8 @@ export class Utilities {
                 fileExport = {};
 
                 const context = vm.createContext({
-                    require: Utilities.buildCustomRequire(files, appId, path.dirname(filename) + '/'),
-                    console,
+                    require: Utilities.buildCustomRequire(files, appId, logSetting, path.dirname(filename) + '/' ),
+                    console: Utilities.getConsole(logSetting),
                     exports: fileExport,
                     process: {},
                 });
