@@ -25,4 +25,7 @@ export const AppSchedulerBridge = {
         return this.hasGeneralPermission(appId);
     },
     cancelAllJobs(appId: string): void { },
+    cancelJobByDataQuery(data: object, appId: string): void {
+        return this.hasGeneralPermission(appId);
+    },
 };

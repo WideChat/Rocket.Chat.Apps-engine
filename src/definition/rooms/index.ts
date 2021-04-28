@@ -24,3 +24,5 @@ export * from './IRoomUserJoinedContext';
 export * from './IPreRoomUserLeave';
 export * from './IPostRoomUserLeave';
 export * from './IRoomUserLeaveContext';
+export * from './IRoomUserTyping';
+export * from './IRoomUserTypingContext';
