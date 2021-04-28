@@ -333,7 +333,7 @@ class AppManager {
     }
     add(appPackage, installationParameters) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { enable = true, marketplaceInfo, permissionsGranted } = installationParameters;
+            const { enable = true, marketplaceInfo, permissionsGranted, user } = installationParameters;
             const aff = new compiler_1.AppFabricationFulfillment();
             const result = yield this.getParser().unpackageApp(appPackage);
             aff.setAppInfo(result.info);
@@ -377,6 +377,7 @@ class AppManager {
             yield this.bridges.getAppActivationBridge().appAdded(app).catch(() => {
                 // If an error occurs during this, oh well.
             });
+            yield this.installApp(created, app, user);
             // Should enable === true, then we go through the entire start up process
             // Otherwise, we only initialize it.
             if (enable) {
@@ -389,9 +390,11 @@ class AppManager {
             return aff;
         });
     }
-    remove(id) {
+    remove(id, uninstallationParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const app = this.apps.get(id);
+            const { user } = uninstallationParameters;
+            yield this.uninstallApp(app, user);
             // Let everyone know that the App has been removed
             yield this.bridges.getAppActivationBridge().appRemoved(app).catch();
             if (AppStatus_1.AppStatusUtils.isEnabled(app.getStatus())) {
@@ -589,6 +592,29 @@ class AppManager {
             return this.enableApp(storageItem, app, true, isManual, silenceStatus);
         });
     }
+    installApp(storageItem, app, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result;
+            const read = this.getAccessorManager().getReader(storageItem.id);
+            const http = this.getAccessorManager().getHttp(storageItem.id);
+            const persistence = this.getAccessorManager().getPersistence(storageItem.id);
+            const modifier = this.getAccessorManager().getModifier(storageItem.id);
+            const context = { user };
+            try {
+                yield app.call(metadata_1.AppMethod.ONINSTALL, context, read, http, persistence, modifier);
+                result = true;
+            }
+            catch (e) {
+                const status = AppStatus_1.AppStatus.ERROR_DISABLED;
+                if (e.name === 'NotEnoughMethodArgumentsError') {
+                    app.getLogger().warn('Please report the following error:');
+                }
+                result = false;
+                yield app.setStatus(status);
+            }
+            return result;
+        });
+    }
     initializeApp(storageItem, app, saveToDb = true, silenceStatus = false) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
@@ -724,6 +750,29 @@ class AppManager {
                 return true;
             }
             return !!this.createAppUser(app);
+        });
+    }
+    uninstallApp(app, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result;
+            const read = this.getAccessorManager().getReader(app.getID());
+            const http = this.getAccessorManager().getHttp(app.getID());
+            const persistence = this.getAccessorManager().getPersistence(app.getID());
+            const modifier = this.getAccessorManager().getModifier(app.getID());
+            const context = { user };
+            try {
+                yield app.call(metadata_1.AppMethod.ONUNINSTALL, context, read, http, persistence, modifier);
+                result = true;
+            }
+            catch (e) {
+                const status = AppStatus_1.AppStatus.ERROR_DISABLED;
+                if (e.name === 'NotEnoughMethodArgumentsError') {
+                    app.getLogger().warn('Please report the following error:');
+                }
+                result = false;
+                yield app.setStatus(status);
+            }
+            return result;
         });
     }
 }

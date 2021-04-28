@@ -149,6 +149,27 @@ class App {
         });
     }
     /**
+     * Method which is called when the App is uninstalled and it is called one single time.
+     *
+     * This method will NOT be called when an App is getting disabled manually, ONLY when
+     * it's being uninstalled from Rocket.Chat.
+     */
+    onUninstall(context, read, http, persistence, modify) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return;
+        });
+    }
+    /**
+     * Method which is called when the App is installed and it is called one single time.
+     *
+     * This method is NOT called when the App is updated.
+     */
+    onInstall(context, read, http, persistence, modify) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return;
+        });
+    }
+    /**
      * Method which is called whenever a setting which belongs to this App has been updated
      * by an external system and not this App itself. The setting passed is the newly updated one.
      *

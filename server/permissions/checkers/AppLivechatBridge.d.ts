@@ -15,6 +15,7 @@ export declare const AppLivechatBridge: {
     createRoom(visitor: IVisitor, agent: IUser, appId: string): void;
     closeRoom(room: ILivechatRoom, comment: string, appId: string): void;
     findRooms(visitor: IVisitor, departmentId: string | null, appId: string): void;
+    findDepartmentsEnabledWithAgents(appId: string): void;
     findDepartmentByIdOrName(value: string, appId: string): void;
     setCustomFields(data: {
         token: IVisitor['token'];

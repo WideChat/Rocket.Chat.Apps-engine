@@ -8,6 +8,8 @@ export declare enum AppMethod {
     INITIALIZE = "initialize",
     ONENABLE = "onEnable",
     ONDISABLE = "onDisable",
+    ONINSTALL = "onInstall",
+    ONUNINSTALL = "onUninstall",
     ONSETTINGUPDATED = "onSettingUpdated",
     SETSTATUS = "setStatus",
     CHECKPREMESSAGESENTPREVENT = "checkPreMessageSentPrevent",

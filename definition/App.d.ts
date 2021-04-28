@@ -1,4 +1,4 @@
-import { IAppAccessors, IConfigurationExtend, IConfigurationModify, IEnvironmentRead, IHttp, ILogger, IRead } from './accessors';
+import { IAppAccessors, IAppInstallationContext, IAppUninstallationContext, IConfigurationExtend, IConfigurationModify, IEnvironmentRead, IHttp, ILogger, IModify, IPersistence, IRead } from './accessors';
 import { AppStatus } from './AppStatus';
 import { IApp } from './IApp';
 import { IAppAuthorInfo } from './metadata/IAppAuthorInfo';
@@ -102,6 +102,19 @@ export declare abstract class App implements IApp {
      * If this App was enabled and then the user disabled it, this method will be called.
      */
     onDisable(configurationModify: IConfigurationModify): Promise<void>;
+    /**
+     * Method which is called when the App is uninstalled and it is called one single time.
+     *
+     * This method will NOT be called when an App is getting disabled manually, ONLY when
+     * it's being uninstalled from Rocket.Chat.
+     */
+    onUninstall(context: IAppUninstallationContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify): Promise<void>;
+    /**
+     * Method which is called when the App is installed and it is called one single time.
+     *
+     * This method is NOT called when the App is updated.
+     */
+    onInstall(context: IAppInstallationContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify): Promise<void>;
     /**
      * Method which is called whenever a setting which belongs to this App has been updated
      * by an external system and not this App itself. The setting passed is the newly updated one.
