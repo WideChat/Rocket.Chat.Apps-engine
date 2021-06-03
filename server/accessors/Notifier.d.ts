@@ -12,5 +12,6 @@ export declare class Notifier implements INotifier {
     notifyUser(user: IUser, message: IMessage): Promise<void>;
     notifyRoom(room: IRoom, message: IMessage): Promise<void>;
     typing(options: ITypingOptions): Promise<() => Promise<void>>;
+    stopTyping(options: ITypingOptions): Promise<void>;
     getMessageBuilder(): IMessageBuilder;
 }

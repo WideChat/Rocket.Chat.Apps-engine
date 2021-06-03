@@ -47,6 +47,17 @@ class Notifier {
             return () => this.msgBridge.typing(Object.assign(Object.assign({}, options), { isTyping: false }), this.appId);
         });
     }
+    stopTyping(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            options.scope = options.scope || INotifier_1.TypingScope.Room;
+            if (!options.username) {
+                const appUser = yield this.userBridge.getAppUser(this.appId);
+                options.username = appUser && appUser.name || '';
+            }
+            this.msgBridge.typing(Object.assign(Object.assign({}, options), { isTyping: false }), this.appId);
+            return;
+        });
+    }
     getMessageBuilder() {
         return new MessageBuilder_1.MessageBuilder();
     }
