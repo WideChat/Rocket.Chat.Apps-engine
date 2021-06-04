@@ -46,6 +46,19 @@ export class Notifier implements INotifier {
         return () => this.msgBridge.typing({ ...options, isTyping: false }, this.appId);
     }
 
+    public async stopTyping(options: ITypingOptions): Promise<void> {
+        options.scope = options.scope || TypingScope.Room;
+
+        if (!options.username) {
+            const appUser = await this.userBridge.getAppUser(this.appId);
+            options.username = appUser && appUser.name || '';
+        }
+
+        this.msgBridge.typing({ ...options, isTyping: false }, this.appId);
+
+        return;
+    }
+
     public getMessageBuilder(): IMessageBuilder {
         return new MessageBuilder();
     }
