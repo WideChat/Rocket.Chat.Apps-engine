@@ -14,4 +14,5 @@ export interface IMessageBridge {
     notifyUser(user: IUser, message: IMessage, appId: string): Promise<void>;
     notifyRoom(room: IRoom, message: IMessage, appId: string): Promise<void>;
     typing(options: ITypingDescriptor, appId: string): Promise<void>;
+    stopTyping(options: ITypingDescriptor, appId: string): Promise<void>;
 }

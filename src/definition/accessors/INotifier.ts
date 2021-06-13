@@ -58,6 +58,12 @@ export interface INotifier {
      */
     typing(options: ITypingOptions): Promise<() => Promise<void>>;
 
+    /**
+     * Notifies all of the users that this user stopeed typing in the provided scope.
+     *
+     */
+    stopTyping(options: ITypingOptions): Promise<void>;
+
     /** Gets a new message builder for building a notification message. */
     getMessageBuilder(): IMessageBuilder;
 }

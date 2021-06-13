@@ -44,4 +44,11 @@ export interface IAppSchedulerBridge {
      * @param appId the id of the app calling this
      */
     cancelAllJobs(appId: string): Promise<void>;
+    /**
+     * Cancels a running job given its data query
+     *
+     * @param {Object} data
+     * @param appId the id of the app calling this
+     */
+    cancelJobByDataQuery(data: object, appId: string): Promise<void>;
 }

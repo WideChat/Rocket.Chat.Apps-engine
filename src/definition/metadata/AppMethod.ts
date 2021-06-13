@@ -50,6 +50,7 @@ export enum AppMethod {
     EXECUTE_POST_ROOM_USER_JOINED = 'executePostRoomUserJoined',
     EXECUTE_PRE_ROOM_USER_LEAVE = 'executePreRoomUserLeave',
     EXECUTE_POST_ROOM_USER_LEAVE = 'executePostRoomUserLeave',
+    EXECUTE_ON_ROOM_USER_TYPING = 'executeOnRoomUserTyping',
     // External Component handlers
     EXECUTEPOSTEXTERNALCOMPONENTOPENED = 'executePostExternalComponentOpened',
     EXECUTEPOSTEXTERNALCOMPONENTCLOSED = 'executePostExternalComponentClosed',
