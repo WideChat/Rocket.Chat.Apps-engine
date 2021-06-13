@@ -24,7 +24,7 @@ class AppsEngineUIHost {
      */
     initialize() {
         window.addEventListener('message', ({ data, source }) => __awaiter(this, void 0, void 0, function* () {
-            if (!data.hasOwnProperty(constants_1.MESSAGE_ID)) {
+            if (!(data === null || data === void 0 ? void 0 : data.hasOwnProperty(constants_1.MESSAGE_ID))) {
                 return;
             }
             this.responseDestination = source;
@@ -32,8 +32,10 @@ class AppsEngineUIHost {
             switch (action) {
                 case definition_1.AppsEngineUIMethods.GET_USER_INFO:
                     this.handleAction(action, id, yield this.getClientUserInfo());
+                    break;
                 case definition_1.AppsEngineUIMethods.GET_ROOM_INFO:
                     this.handleAction(action, id, yield this.getClientRoomInfo());
+                    break;
             }
         }));
     }
