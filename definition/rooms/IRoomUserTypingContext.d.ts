@@ -15,4 +15,10 @@ export interface IRoomUserTypingContext {
      * The user typing status
      */
     typing: boolean;
+    /**
+     * Extra data
+     */
+    data: {
+        [key: string]: any;
+    };
 }

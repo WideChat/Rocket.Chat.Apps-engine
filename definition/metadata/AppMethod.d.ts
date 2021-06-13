@@ -8,6 +8,8 @@ export declare enum AppMethod {
     INITIALIZE = "initialize",
     ONENABLE = "onEnable",
     ONDISABLE = "onDisable",
+    ONINSTALL = "onInstall",
+    ONUNINSTALL = "onUninstall",
     ONSETTINGUPDATED = "onSettingUpdated",
     SETSTATUS = "setStatus",
     CHECKPREMESSAGESENTPREVENT = "checkPreMessageSentPrevent",
@@ -44,6 +46,8 @@ export declare enum AppMethod {
     EXECUTEPOSTROOMDELETED = "executePostRoomDeleted",
     EXECUTE_PRE_ROOM_USER_JOINED = "executePreRoomUserJoined",
     EXECUTE_POST_ROOM_USER_JOINED = "executePostRoomUserJoined",
+    EXECUTE_PRE_ROOM_USER_LEAVE = "executePreRoomUserLeave",
+    EXECUTE_POST_ROOM_USER_LEAVE = "executePostRoomUserLeave",
     EXECUTE_ON_ROOM_USER_TYPING = "executeOnRoomUserTyping",
     EXECUTEPOSTEXTERNALCOMPONENTOPENED = "executePostExternalComponentOpened",
     EXECUTEPOSTEXTERNALCOMPONENTCLOSED = "executePostExternalComponentClosed",
@@ -61,5 +65,6 @@ export declare enum AppMethod {
     EXECUTE_POST_LIVECHAT_AGENT_UNASSIGNED = "executePostLivechatAgentUnassigned",
     EXECUTE_POST_LIVECHAT_ROOM_TRANSFERRED = "executePostLivechatRoomTransferred",
     EXECUTE_POST_LIVECHAT_GUEST_SAVED = "executePostLivechatGuestSaved",
-    EXECUTE_POST_LIVECHAT_ROOM_SAVED = "executePostLivechatRoomSaved"
+    EXECUTE_POST_LIVECHAT_ROOM_SAVED = "executePostLivechatRoomSaved",
+    EXECUTE_PRE_FILE_UPLOAD = "executePreFileUpload"
 }

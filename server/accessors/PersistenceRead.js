@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PersistenceRead = void 0;
 class PersistenceRead {
     constructor(persistBridge, appId) {
         this.persistBridge = persistBridge;

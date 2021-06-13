@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PathAlreadyExistsError = void 0;
 class PathAlreadyExistsError {
     constructor(path) {
         this.name = 'PathAlreadyExists';

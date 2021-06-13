@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageBuilder = void 0;
 const metadata_1 = require("../../definition/metadata");
 const uikit_1 = require("../../definition/uikit");
 class MessageBuilder {
@@ -10,6 +11,12 @@ class MessageBuilder {
     setData(data) {
         delete data.id;
         this.msg = data;
+        return this;
+    }
+    setUpdateData(data, editor) {
+        this.msg = data;
+        this.msg.editor = editor;
+        this.msg.editedAt = new Date();
         return this;
     }
     setThreadId(threadId) {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppStorage = void 0;
 class AppStorage {
     constructor(engine) {
         this.engine = engine;

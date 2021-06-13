@@ -8,6 +8,8 @@ export enum AppMethod {
     INITIALIZE = 'initialize',
     ONENABLE = 'onEnable',
     ONDISABLE = 'onDisable',
+    ONINSTALL = 'onInstall',
+    ONUNINSTALL = 'onUninstall',
     ONSETTINGUPDATED = 'onSettingUpdated',
     SETSTATUS = 'setStatus',
     // Message handlers
@@ -46,6 +48,8 @@ export enum AppMethod {
     EXECUTEPOSTROOMDELETED = 'executePostRoomDeleted',
     EXECUTE_PRE_ROOM_USER_JOINED = 'executePreRoomUserJoined',
     EXECUTE_POST_ROOM_USER_JOINED = 'executePostRoomUserJoined',
+    EXECUTE_PRE_ROOM_USER_LEAVE = 'executePreRoomUserLeave',
+    EXECUTE_POST_ROOM_USER_LEAVE = 'executePostRoomUserLeave',
     EXECUTE_ON_ROOM_USER_TYPING = 'executeOnRoomUserTyping',
     // External Component handlers
     EXECUTEPOSTEXTERNALCOMPONENTOPENED = 'executePostExternalComponentOpened',
@@ -67,4 +71,6 @@ export enum AppMethod {
     EXECUTE_POST_LIVECHAT_ROOM_TRANSFERRED = 'executePostLivechatRoomTransferred',
     EXECUTE_POST_LIVECHAT_GUEST_SAVED = 'executePostLivechatGuestSaved',
     EXECUTE_POST_LIVECHAT_ROOM_SAVED = 'executePostLivechatRoomSaved',
+    // FileUpload
+    EXECUTE_PRE_FILE_UPLOAD = 'executePreFileUpload',
 }

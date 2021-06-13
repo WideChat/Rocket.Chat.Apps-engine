@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppMethod = void 0;
 var AppMethod;
 (function (AppMethod) {
     AppMethod["_API_EXECUTOR"] = "apiExecutor";
@@ -11,6 +12,8 @@ var AppMethod;
     AppMethod["INITIALIZE"] = "initialize";
     AppMethod["ONENABLE"] = "onEnable";
     AppMethod["ONDISABLE"] = "onDisable";
+    AppMethod["ONINSTALL"] = "onInstall";
+    AppMethod["ONUNINSTALL"] = "onUninstall";
     AppMethod["ONSETTINGUPDATED"] = "onSettingUpdated";
     AppMethod["SETSTATUS"] = "setStatus";
     // Message handlers
@@ -49,6 +52,8 @@ var AppMethod;
     AppMethod["EXECUTEPOSTROOMDELETED"] = "executePostRoomDeleted";
     AppMethod["EXECUTE_PRE_ROOM_USER_JOINED"] = "executePreRoomUserJoined";
     AppMethod["EXECUTE_POST_ROOM_USER_JOINED"] = "executePostRoomUserJoined";
+    AppMethod["EXECUTE_PRE_ROOM_USER_LEAVE"] = "executePreRoomUserLeave";
+    AppMethod["EXECUTE_POST_ROOM_USER_LEAVE"] = "executePostRoomUserLeave";
     AppMethod["EXECUTE_ON_ROOM_USER_TYPING"] = "executeOnRoomUserTyping";
     // External Component handlers
     AppMethod["EXECUTEPOSTEXTERNALCOMPONENTOPENED"] = "executePostExternalComponentOpened";
@@ -70,6 +75,8 @@ var AppMethod;
     AppMethod["EXECUTE_POST_LIVECHAT_ROOM_TRANSFERRED"] = "executePostLivechatRoomTransferred";
     AppMethod["EXECUTE_POST_LIVECHAT_GUEST_SAVED"] = "executePostLivechatGuestSaved";
     AppMethod["EXECUTE_POST_LIVECHAT_ROOM_SAVED"] = "executePostLivechatRoomSaved";
+    // FileUpload
+    AppMethod["EXECUTE_PRE_FILE_UPLOAD"] = "executePreFileUpload";
 })(AppMethod = exports.AppMethod || (exports.AppMethod = {}));
 
 //# sourceMappingURL=AppMethod.js.map

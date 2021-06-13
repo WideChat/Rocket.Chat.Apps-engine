@@ -5,8 +5,8 @@ export interface ILivechatBridge {
      * @deprecated please use the `isOnlineAsync` method instead.
      * In the next major, this method will be `async`
      */
-    isOnline(departmentId?: string): boolean;
-    isOnlineAsync(departmentId?: string): Promise<boolean>;
+    isOnline(departmentId?: string, appId?: string): boolean;
+    isOnlineAsync(departmentId?: string, appId?: string): Promise<boolean>;
     createMessage(message: ILivechatMessage, appId: string): Promise<string>;
     getMessageById(messageId: string, appId: string): Promise<ILivechatMessage>;
     updateMessage(message: ILivechatMessage, appId: string): Promise<void>;
@@ -25,6 +25,7 @@ export interface ILivechatBridge {
     createRoom(visitor: IVisitor, agent: IUser, appId: string): Promise<ILivechatRoom>;
     closeRoom(room: ILivechatRoom, comment: string, appId: string): Promise<boolean>;
     findRooms(visitor: IVisitor, departmentId: string | null, appId: string): Promise<Array<ILivechatRoom>>;
+    findDepartmentsEnabledWithAgents(appId: string): Promise<Array<IDepartment>>;
     findDepartmentByIdOrName(value: string, appdId: string): Promise<IDepartment | undefined>;
     setCustomFields(data: {
         token: IVisitor['token'];

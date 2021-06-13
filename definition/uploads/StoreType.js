@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StoreType = void 0;
 var StoreType;
 (function (StoreType) {
     StoreType["GridFS"] = "GridFS:Uploads";

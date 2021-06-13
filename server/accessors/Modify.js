@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Modify = void 0;
 const ModifyCreator_1 = require("./ModifyCreator");
+const ModifyDeleter_1 = require("./ModifyDeleter");
 const ModifyExtender_1 = require("./ModifyExtender");
 const ModifyUpdater_1 = require("./ModifyUpdater");
 const Notifier_1 = require("./Notifier");
@@ -11,6 +13,7 @@ class Modify {
         this.bridges = bridges;
         this.appId = appId;
         this.creator = new ModifyCreator_1.ModifyCreator(this.bridges, this.appId);
+        this.deleter = new ModifyDeleter_1.ModifyDeleter(this.bridges, this.appId);
         this.updater = new ModifyUpdater_1.ModifyUpdater(this.bridges, this.appId);
         this.extender = new ModifyExtender_1.ModifyExtender(this.bridges, this.appId);
         this.notifier = new Notifier_1.Notifier(this.bridges.getUserBridge(), this.bridges.getMessageBridge(), this.appId);
@@ -19,6 +22,9 @@ class Modify {
     }
     getCreator() {
         return this.creator;
+    }
+    getDeleter() {
+        return this.deleter;
     }
     getUpdater() {
         return this.updater;

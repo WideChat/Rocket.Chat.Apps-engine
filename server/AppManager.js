@@ -1,23 +1,27 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bridges_1 = require("./bridges");
-const compiler_1 = require("./compiler");
-const managers_1 = require("./managers");
-const DisabledApp_1 = require("./misc/DisabledApp");
-const ProxiedApp_1 = require("./ProxiedApp");
-const storage_1 = require("./storage");
+exports.getPermissionsByAppId = exports.AppManager = void 0;
 const AppStatus_1 = require("../definition/AppStatus");
 const metadata_1 = require("../definition/metadata");
 const users_1 = require("../definition/users");
+const bridges_1 = require("./bridges");
+const compiler_1 = require("./compiler");
 const errors_1 = require("./errors");
+const managers_1 = require("./managers");
+const AppPermissionManager_1 = require("./managers/AppPermissionManager");
+const DisabledApp_1 = require("./misc/DisabledApp");
+const AppPermissions_1 = require("./permissions/AppPermissions");
+const ProxiedApp_1 = require("./ProxiedApp");
+const storage_1 = require("./storage");
 class AppManager {
     constructor(rlStorage, logStorage, rlBridges) {
         // Singleton style. There can only ever be one AppManager instance
@@ -78,7 +82,22 @@ class AppManager {
     }
     /** Gets the instance of the Bridge manager. */
     getBridges() {
-        return this.bridges;
+        const handler = {
+            get(target, prop, receiver) {
+                const reflection = Reflect.get(target, prop, receiver);
+                if (typeof prop === 'symbol' || typeof prop === 'number') {
+                    return reflection;
+                }
+                if (typeof target[prop] === 'function' && /^get.+Bridge$/.test(prop)) {
+                    return (...args) => {
+                        const bridge = reflection.apply(target, args);
+                        return AppPermissionManager_1.AppPermissionManager.proxy(bridge);
+                    };
+                }
+                return reflection;
+            },
+        };
+        return new Proxy(this.bridges, handler);
     }
     /** Gets the instance of the listener manager. */
     getListenerManager() {
@@ -153,7 +172,7 @@ class AppManager {
                     // it was compiled or something similar.
                     continue;
                 }
-                yield this.initializeApp(items.get(rl.getID()), rl, true).catch(console.error);
+                yield this.initializeApp(items.get(rl.getID()), rl, false, true).catch(console.error);
             }
             // Let's ensure the required settings are all set
             for (const rl of this.apps.values()) {
@@ -172,6 +191,7 @@ class AppManager {
                 }
                 else if (!AppStatus_1.AppStatusUtils.isError(app.getStatus())) {
                     this.listenerManager.lockEssentialEvents(app);
+                    yield this.schedulerManager.cancelAllJobs(app.getID());
                 }
             }
             this.isLoaded = true;
@@ -246,6 +266,14 @@ class AppManager {
     getOneById(appId) {
         return this.apps.get(appId);
     }
+    getPermissionsById(appId) {
+        const app = this.apps.get(appId);
+        if (!app) {
+            return [];
+        }
+        const { permissionsGranted } = app.getStorageItem();
+        return permissionsGranted || AppPermissions_1.defaultPermissions;
+    }
     enable(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const rl = this.apps.get(id);
@@ -303,8 +331,9 @@ class AppManager {
             return true;
         });
     }
-    add(appPackage, enable = true, marketplaceInfo) {
+    add(appPackage, installationParameters) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { enable = true, marketplaceInfo, permissionsGranted, user } = installationParameters;
             const aff = new compiler_1.AppFabricationFulfillment();
             const result = yield this.getParser().unpackageApp(appPackage);
             aff.setAppInfo(result.info);
@@ -320,6 +349,7 @@ class AppManager {
                 settings: {},
                 implemented: result.implemented.getValues(),
                 marketplaceInfo,
+                permissionsGranted,
             };
             // Now that is has all been compiled, let's get the
             // the App instance from the source.
@@ -347,6 +377,7 @@ class AppManager {
             yield this.bridges.getAppActivationBridge().appAdded(app).catch(() => {
                 // If an error occurs during this, oh well.
             });
+            yield this.installApp(created, app, user);
             // Should enable === true, then we go through the entire start up process
             // Otherwise, we only initialize it.
             if (enable) {
@@ -359,9 +390,11 @@ class AppManager {
             return aff;
         });
     }
-    remove(id) {
+    remove(id, uninstallationParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const app = this.apps.get(id);
+            const { user } = uninstallationParameters;
+            yield this.uninstallApp(app, user);
             // Let everyone know that the App has been removed
             yield this.bridges.getAppActivationBridge().appRemoved(app).catch();
             if (AppStatus_1.AppStatusUtils.isEnabled(app.getStatus())) {
@@ -383,7 +416,7 @@ class AppManager {
             return app;
         });
     }
-    update(appPackage) {
+    update(appPackage, permissionsGranted) {
         return __awaiter(this, void 0, void 0, function* () {
             const aff = new compiler_1.AppFabricationFulfillment();
             const result = yield this.getParser().unpackageApp(appPackage);
@@ -401,11 +434,12 @@ class AppManager {
                 info: result.info,
                 status: this.apps.get(old.id).getStatus(),
                 zip: appPackage.toString('base64'),
-                compiled: result.files,
+                compiled: Object.entries(result.files).reduce((files, [key, value]) => (files[key.replace(/\./gi, '$')] = value, files), {}),
                 languageContent: result.languageContent,
                 settings: old.settings,
                 implemented: result.implemented.getValues(),
                 marketplaceInfo: old.marketplaceInfo,
+                permissionsGranted,
             });
             // Now that is has all been compiled, let's get the
             // the App instance from the source.
@@ -558,6 +592,29 @@ class AppManager {
             return this.enableApp(storageItem, app, true, isManual, silenceStatus);
         });
     }
+    installApp(storageItem, app, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result;
+            const read = this.getAccessorManager().getReader(storageItem.id);
+            const http = this.getAccessorManager().getHttp(storageItem.id);
+            const persistence = this.getAccessorManager().getPersistence(storageItem.id);
+            const modifier = this.getAccessorManager().getModifier(storageItem.id);
+            const context = { user };
+            try {
+                yield app.call(metadata_1.AppMethod.ONINSTALL, context, read, http, persistence, modifier);
+                result = true;
+            }
+            catch (e) {
+                const status = AppStatus_1.AppStatus.ERROR_DISABLED;
+                if (e.name === 'NotEnoughMethodArgumentsError') {
+                    app.getLogger().warn('Please report the following error:');
+                }
+                result = false;
+                yield app.setStatus(status);
+            }
+            return result;
+        });
+    }
     initializeApp(storageItem, app, saveToDb = true, silenceStatus = false) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
@@ -577,7 +634,6 @@ class AppManager {
                 if (e instanceof errors_1.InvalidLicenseError) {
                     status = AppStatus_1.AppStatus.INVALID_LICENSE_DISABLED;
                 }
-                console.error(e);
                 this.commandManager.unregisterCommands(storageItem.id);
                 this.externalComponentManager.unregisterExternalComponents(storageItem.id);
                 this.apiManager.unregisterApis(storageItem.id);
@@ -696,7 +752,38 @@ class AppManager {
             return !!this.createAppUser(app);
         });
     }
+    uninstallApp(app, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result;
+            const read = this.getAccessorManager().getReader(app.getID());
+            const http = this.getAccessorManager().getHttp(app.getID());
+            const persistence = this.getAccessorManager().getPersistence(app.getID());
+            const modifier = this.getAccessorManager().getModifier(app.getID());
+            const context = { user };
+            try {
+                yield app.call(metadata_1.AppMethod.ONUNINSTALL, context, read, http, persistence, modifier);
+                result = true;
+            }
+            catch (e) {
+                const status = AppStatus_1.AppStatus.ERROR_DISABLED;
+                if (e.name === 'NotEnoughMethodArgumentsError') {
+                    app.getLogger().warn('Please report the following error:');
+                }
+                result = false;
+                yield app.setStatus(status);
+            }
+            return result;
+        });
+    }
 }
 exports.AppManager = AppManager;
+const getPermissionsByAppId = (appId) => {
+    if (!AppManager.Instance) {
+        console.error('AppManager should be instantiated first');
+        return [];
+    }
+    return AppManager.Instance.getPermissionsById(appId);
+};
+exports.getPermissionsByAppId = getPermissionsByAppId;
 
 //# sourceMappingURL=AppManager.js.map

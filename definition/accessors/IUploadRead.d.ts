@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { IUpload } from '../uploads';
 export interface IUploadRead {
     getById(id: string): Promise<IUpload>;

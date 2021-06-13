@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppImplements = void 0;
 const AppInterface_1 = require("../../definition/metadata/AppInterface");
 const Utilities_1 = require("../misc/Utilities");
 class AppImplements {

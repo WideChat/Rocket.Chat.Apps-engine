@@ -1,3 +1,4 @@
+import { ISchedulerModify } from './ISchedulerModify';
 import { IServerSettingsModify } from './IServerSettingsModify';
 import { ISlashCommandsModify } from './ISlashCommandsModify';
 /**
@@ -9,4 +10,6 @@ export interface IConfigurationModify {
     readonly serverSettings: IServerSettingsModify;
     /** Accessor for modifying the slash commands inside of Rocket.Chat. */
     readonly slashCommands: ISlashCommandsModify;
+    /** Accessor for modifying schedulers */
+    readonly scheduler: ISchedulerModify;
 }

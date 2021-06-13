@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UIKitInteractionType = void 0;
 var UIKitInteractionType;
 (function (UIKitInteractionType) {
     UIKitInteractionType["MODAL_OPEN"] = "modal.open";

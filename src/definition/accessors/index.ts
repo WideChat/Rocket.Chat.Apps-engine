@@ -1,5 +1,8 @@
 import { IApiExtend } from './IApiExtend';
 import { IAppAccessors } from './IAppAccessors';
+import { IAppInstallationContext } from './IAppInstallationContext';
+import { IAppUninstallationContext } from './IAppUninstallationContext';
+import { ICloudWorkspaceRead } from './ICloudWorkspaceRead';
 import { IConfigurationExtend } from './IConfigurationExtend';
 import { IConfigurationModify } from './IConfigurationModify';
 import { IDiscussionBuilder } from './IDiscussionBuilder';
@@ -18,6 +21,7 @@ import { IMessageExtender } from './IMessageExtender';
 import { IMessageRead } from './IMessageRead';
 import { IModify } from './IModify';
 import { IModifyCreator } from './IModifyCreator';
+import { IModifyDeleter } from './IModifyDeleter';
 import { IModifyExtender } from './IModifyExtender';
 import { IModifyUpdater } from './IModifyUpdater';
 import { INotifier } from './INotifier';
@@ -44,6 +48,9 @@ import { IUserRead } from './IUserRead';
 export {
     HttpStatusCode,
     IAppAccessors,
+    IAppUninstallationContext,
+    IAppInstallationContext,
+    ICloudWorkspaceRead,
     IConfigurationExtend,
     IConfigurationModify,
     IDiscussionBuilder,
@@ -67,6 +74,7 @@ export {
     IMessageRead,
     IModify,
     IModifyCreator,
+    IModifyDeleter,
     IModifyExtender,
     IModifyUpdater,
     INotifier,

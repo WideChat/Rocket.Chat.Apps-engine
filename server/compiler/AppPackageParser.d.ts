@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { IParseAppPackageResult } from './IParseAppPackageResult';
 export declare class AppPackageParser {
     static uuid4Regex: RegExp;

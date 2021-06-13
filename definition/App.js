@@ -1,13 +1,15 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.App = void 0;
 const AppStatus_1 = require("./AppStatus");
 class App {
     /**
@@ -142,6 +144,27 @@ class App {
      * If this App was enabled and then the user disabled it, this method will be called.
      */
     onDisable(configurationModify) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return;
+        });
+    }
+    /**
+     * Method which is called when the App is uninstalled and it is called one single time.
+     *
+     * This method will NOT be called when an App is getting disabled manually, ONLY when
+     * it's being uninstalled from Rocket.Chat.
+     */
+    onUninstall(context, read, http, persistence, modify) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return;
+        });
+    }
+    /**
+     * Method which is called when the App is installed and it is called one single time.
+     *
+     * This method is NOT called when the App is updated.
+     */
+    onInstall(context, read, http, persistence, modify) {
         return __awaiter(this, void 0, void 0, function* () {
             return;
         });

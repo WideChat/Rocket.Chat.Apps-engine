@@ -6,8 +6,8 @@ export declare class AppAccessors implements IAppAccessors {
     private accessorManager;
     private apiManager;
     constructor(manager: AppManager, appId: string);
-    readonly environmentReader: IEnvironmentRead;
-    readonly reader: IRead;
-    readonly http: IHttp;
-    readonly providedApiEndpoints: Array<IApiEndpointMetadata>;
+    get environmentReader(): IEnvironmentRead;
+    get reader(): IRead;
+    get http(): IHttp;
+    get providedApiEndpoints(): Array<IApiEndpointMetadata>;
 }

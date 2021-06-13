@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LivechatRead = void 0;
 class LivechatRead {
     constructor(livechatBridge, appId) {
         this.livechatBridge = livechatBridge;
@@ -11,10 +12,13 @@ class LivechatRead {
      */
     isOnline(departmentId) {
         console.warn('The `LivechatRead.isOnline` method is deprecated and won\'t behave as intended. Please use `LivechatRead.isOnlineAsync` instead');
-        return this.livechatBridge.isOnline(departmentId);
+        return this.livechatBridge.isOnline(departmentId, this.appId);
     }
     isOnlineAsync(departmentId) {
-        return this.livechatBridge.isOnlineAsync(departmentId);
+        return this.livechatBridge.isOnlineAsync(departmentId, this.appId);
+    }
+    getDepartmentsEnabledWithAgents() {
+        return this.livechatBridge.findDepartmentsEnabledWithAgents(this.appId);
     }
     getLivechatRooms(visitor, departmentId) {
         return this.livechatBridge.findRooms(visitor, departmentId, this.appId);

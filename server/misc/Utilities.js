@@ -1,15 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Utilities = void 0;
 const cloneDeep = require("lodash.clonedeep");
 const path = require("path");
 const vm = require("vm");
-var AllowedInternalModules;
-(function (AllowedInternalModules) {
-    AllowedInternalModules[AllowedInternalModules["path"] = 0] = "path";
-    AllowedInternalModules[AllowedInternalModules["url"] = 1] = "url";
-    AllowedInternalModules[AllowedInternalModules["crypto"] = 2] = "crypto";
-    AllowedInternalModules[AllowedInternalModules["buffer"] = 3] = "buffer";
-})(AllowedInternalModules || (AllowedInternalModules = {}));
+const modules_1 = require("../compiler/modules");
 class Utilities {
     static deepClone(item) {
         return cloneDeep(item);
@@ -38,9 +33,25 @@ class Utilities {
         return path.normalize(moduleName).replace(/\.\.?\//g, '').replace(/^\//, '') + '.js';
     }
     static allowedInternalModuleRequire(moduleName) {
-        return moduleName in AllowedInternalModules;
+        return moduleName in modules_1.AllowedInternalModules;
     }
-    static buildCustomRequire(files, currentPath = '.') {
+    static shouldLog(setting, level) {
+        return setting >= level;
+    }
+    static getConsole(setting = 0) {
+        return Object.assign(Object.assign({}, console), { debug: (...args) => {
+                return this.shouldLog(setting, 2) && console.debug(...args);
+            }, log: (...args) => {
+                return this.shouldLog(setting, 1) && console.log(...args);
+            }, info: (...args) => {
+                return this.shouldLog(setting, 1) && console.info(...args);
+            }, warn: (...args) => {
+                return this.shouldLog(setting, 1) && console.warn(...args);
+            }, error: (...args) => {
+                return this.shouldLog(setting, 0) && console.error(...args);
+            } });
+    }
+    static buildCustomRequire(files, appId, logSetting = 0, currentPath = '.') {
         return function _requirer(mod) {
             // Keep compatibility with apps importing apps-ts-definition
             if (mod.startsWith('@rocket.chat/apps-ts-definition/')) {
@@ -54,7 +65,7 @@ class Utilities {
                 return require(mod);
             }
             if (Utilities.allowedInternalModuleRequire(mod)) {
-                return require(mod);
+                return modules_1.requireNativeModule(mod, appId);
             }
             if (currentPath !== '.') {
                 mod = path.join(currentPath, mod);
@@ -66,8 +77,8 @@ class Utilities {
             if (filename) {
                 fileExport = {};
                 const context = vm.createContext({
-                    require: Utilities.buildCustomRequire(files, path.dirname(filename) + '/'),
-                    console,
+                    require: Utilities.buildCustomRequire(files, appId, logSetting, path.dirname(filename) + '/'),
+                    console: Utilities.getConsole(logSetting),
                     exports: fileExport,
                     process: {},
                 });

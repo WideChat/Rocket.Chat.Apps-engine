@@ -1,13 +1,15 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppListenerManager = void 0;
 const exceptions_1 = require("../../definition/exceptions");
 const metadata_1 = require("../../definition/metadata");
 const uikit_1 = require("../../definition/uikit");
@@ -129,6 +131,10 @@ class AppListenerManager {
                     return this.executePreRoomUserJoined(data);
                 case metadata_1.AppInterface.IPostRoomUserJoined:
                     return this.executePostRoomUserJoined(data);
+                case metadata_1.AppInterface.IPreRoomUserLeave:
+                    return this.executePreRoomUserLeave(data);
+                case metadata_1.AppInterface.IPostRoomUserLeave:
+                    return this.executePostRoomUserLeave(data);
                 case metadata_1.AppInterface.IRoomUserTyping:
                     return this.executeOnRoomUserTyping(data);
                 // External Components
@@ -162,6 +168,9 @@ class AppListenerManager {
                     return this.executePostLivechatRoomTransferred(data);
                 case metadata_1.AppInterface.IPostLivechatGuestSaved:
                     return this.executePostLivechatGuestSaved(data);
+                // FileUpload
+                case metadata_1.AppInterface.IPreFileUpload:
+                    return this.executePreFileUpload(data);
                 default:
                     console.warn('An invalid listener was called');
                     return;
@@ -477,7 +486,20 @@ class AppListenerManager {
             for (const appId of this.listeners.get(metadata_1.AppInterface.IPostRoomUserJoined)) {
                 const app = this.manager.getOneById(appId);
                 if (app.hasMethod(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_JOINED)) {
-                    yield app.call(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_JOINED, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId));
+                    yield app.call(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_JOINED, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId), this.am.getModifier(appId));
+                }
+            }
+        });
+    }
+    executePreRoomUserLeave(externalData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = Utilities_1.Utilities.deepClone(externalData);
+            data.room = new Room_1.Room(Utilities_1.Utilities.deepFreeze(data.room), this.manager);
+            Utilities_1.Utilities.deepFreeze(data.leavingUser);
+            for (const appId of this.listeners.get(metadata_1.AppInterface.IPreRoomUserLeave)) {
+                const app = this.manager.getOneById(appId);
+                if (app.hasMethod(metadata_1.AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE)) {
+                    yield app.call(metadata_1.AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId));
                 }
             }
         });
@@ -492,6 +514,19 @@ class AppListenerManager {
                 const app = this.manager.getOneById(appId);
                 if (app.hasMethod(metadata_1.AppMethod.EXECUTE_ON_ROOM_USER_TYPING)) {
                     yield app.call(metadata_1.AppMethod.EXECUTE_ON_ROOM_USER_TYPING, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId));
+                }
+            }
+        });
+    }
+    executePostRoomUserLeave(externalData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = Utilities_1.Utilities.deepClone(externalData);
+            data.room = new Room_1.Room(Utilities_1.Utilities.deepFreeze(data.room), this.manager);
+            Utilities_1.Utilities.deepFreeze(data.leavingUser);
+            for (const appId of this.listeners.get(metadata_1.AppInterface.IPostRoomUserLeave)) {
+                const app = this.manager.getOneById(appId);
+                if (app.hasMethod(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_LEAVE)) {
+                    yield app.call(metadata_1.AppMethod.EXECUTE_POST_ROOM_USER_LEAVE, data, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId), this.am.getModifier(appId));
                 }
             }
         });
@@ -709,6 +744,18 @@ class AppListenerManager {
                     continue;
                 }
                 yield app.call(metadata_1.AppMethod.EXECUTE_POST_LIVECHAT_ROOM_SAVED, cfLivechatRoom, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId), this.am.getModifier(appId));
+            }
+        });
+    }
+    // FileUpload
+    executePreFileUpload(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const context = Object.freeze(data);
+            for (const appId of this.listeners.get(metadata_1.AppInterface.IPreFileUpload)) {
+                const app = this.manager.getOneById(appId);
+                if (app.hasMethod(metadata_1.AppMethod.EXECUTE_PRE_FILE_UPLOAD)) {
+                    yield app.call(metadata_1.AppMethod.EXECUTE_PRE_FILE_UPLOAD, context, this.am.getReader(appId), this.am.getHttp(appId), this.am.getPersistence(appId), this.am.getModifier(appId));
+                }
             }
         });
     }

@@ -9,6 +9,7 @@ export declare class MessageBuilder implements IMessageBuilder {
     private msg;
     constructor(message?: IMessage);
     setData(data: IMessage): IMessageBuilder;
+    setUpdateData(data: IMessage, editor: IUser): IMessageBuilder;
     setThreadId(threadId: string): IMessageBuilder;
     getThreadId(): string;
     setRoom(room: IRoom): IMessageBuilder;

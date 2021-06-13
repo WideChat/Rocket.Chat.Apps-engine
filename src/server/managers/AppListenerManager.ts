@@ -3,18 +3,14 @@ import { IExternalComponent } from '../../definition/externalComponent';
 import { ILivechatEventContext, ILivechatRoom, ILivechatTransferEventContext, IVisitor } from '../../definition/livechat';
 import { IMessage } from '../../definition/messages';
 import { AppInterface, AppMethod } from '../../definition/metadata';
-import { IRoom, IRoomUserJoinedContext, IRoomUserTypingContext } from '../../definition/rooms';
+import { IRoom, IRoomUserJoinedContext, IRoomUserLeaveContext, IRoomUserTypingContext } from '../../definition/rooms';
 import { IUIKitIncomingInteraction, IUIKitResponse, IUIKitView, UIKitIncomingInteractionType } from '../../definition/uikit';
 import { IUIKitLivechatIncomingInteraction, UIKitLivechatBlockInteractionContext } from '../../definition/uikit/livechat';
+import { IUIKitIncomingInteractionMessageContainer, IUIKitIncomingInteractionModalContainer } from '../../definition/uikit/UIKitIncomingInteractionContainer';
 import {
-    IUIKitIncomingInteractionMessageContainer,
-    IUIKitIncomingInteractionModalContainer,
-} from '../../definition/uikit/UIKitIncomingInteractionContainer';
-import {
-    UIKitBlockInteractionContext,
-    UIKitViewCloseInteractionContext,
-    UIKitViewSubmitInteractionContext,
+    UIKitBlockInteractionContext, UIKitViewCloseInteractionContext, UIKitViewSubmitInteractionContext,
 } from '../../definition/uikit/UIKitInteractionContext';
+import { IFileUploadContext } from '../../definition/uploads/IFileUploadContext';
 import { IUser } from '../../definition/users';
 import { MessageBuilder, MessageExtender, RoomBuilder, RoomExtender } from '../accessors';
 import { AppManager } from '../AppManager';
@@ -35,11 +31,21 @@ type EventData = (
     IExternalComponent |
     ILivechatEventContext |
     IRoomUserJoinedContext |
+    IRoomUserLeaveContext |
     ILivechatTransferEventContext |
+    IFileUploadContext |
     IRoomUserTypingContext
 );
 
-type EventReturn = void | boolean | IMessage | IRoom | IUser | IUIKitResponse | ILivechatRoom;
+type EventReturn = (
+    void |
+    boolean |
+    IMessage |
+    IRoom |
+    IUser |
+    IUIKitResponse |
+    ILivechatRoom
+);
 
 export class AppListenerManager {
     private am: AppAccessorManager;
@@ -181,6 +187,10 @@ export class AppListenerManager {
                 return this.executePreRoomUserJoined(data as IRoomUserJoinedContext);
             case AppInterface.IPostRoomUserJoined:
                 return this.executePostRoomUserJoined(data as IRoomUserJoinedContext);
+            case AppInterface.IPreRoomUserLeave:
+                return this.executePreRoomUserLeave(data as IRoomUserLeaveContext);
+            case AppInterface.IPostRoomUserLeave:
+                return this.executePostRoomUserLeave(data as IRoomUserLeaveContext);
             case AppInterface.IRoomUserTyping:
                 return this.executeOnRoomUserTyping(data as IRoomUserTypingContext);
             // External Components
@@ -214,6 +224,9 @@ export class AppListenerManager {
                 return this.executePostLivechatRoomTransferred(data as ILivechatTransferEventContext);
             case AppInterface.IPostLivechatGuestSaved:
                 return this.executePostLivechatGuestSaved(data as IVisitor);
+            // FileUpload
+            case AppInterface.IPreFileUpload:
+                return this.executePreFileUpload(data as IFileUploadContext);
             default:
                 console.warn('An invalid listener was called');
                 return;
@@ -267,7 +280,7 @@ export class AppListenerManager {
                     cfMsg,
                     this.am.getReader(appId),
                     this.am.getHttp(appId),
-                    ) as boolean;
+                ) as boolean;
             }
 
             if (continueOn && app.hasMethod(AppMethod.EXECUTEPREMESSAGESENTEXTEND)) {
@@ -447,7 +460,7 @@ export class AppListenerManager {
                     cfMsg,
                     this.am.getReader(appId),
                     this.am.getHttp(appId),
-                    ) as boolean;
+                ) as boolean;
             }
 
             if (continueOn && app.hasMethod(AppMethod.EXECUTEPREMESSAGEUPDATEDEXTEND)) {
@@ -743,11 +756,31 @@ export class AppListenerManager {
                     this.am.getReader(appId),
                     this.am.getHttp(appId),
                     this.am.getPersistence(appId),
+                    this.am.getModifier(appId),
                 );
             }
         }
     }
 
+    private async executePreRoomUserLeave(externalData: IRoomUserLeaveContext): Promise<void> {
+        const data = Utilities.deepClone(externalData);
+
+        data.room = new Room(Utilities.deepFreeze(data.room), this.manager);
+        Utilities.deepFreeze(data.leavingUser);
+
+        for (const appId of this.listeners.get(AppInterface.IPreRoomUserLeave)) {
+            const app = this.manager.getOneById(appId);
+
+            if (app.hasMethod(AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE)) {
+                await app.call(AppMethod.EXECUTE_PRE_ROOM_USER_LEAVE,
+                    data,
+                    this.am.getReader(appId),
+                    this.am.getHttp(appId),
+                    this.am.getPersistence(appId),
+                );
+            }
+        }
+    }
     private async executeOnRoomUserTyping(externalData: IRoomUserTypingContext): Promise<void> {
         const data = Utilities.deepClone(externalData);
 
@@ -764,6 +797,27 @@ export class AppListenerManager {
                     this.am.getReader(appId),
                     this.am.getHttp(appId),
                     this.am.getPersistence(appId),
+                );
+            }
+        }
+    }
+
+    private async executePostRoomUserLeave(externalData: IRoomUserLeaveContext): Promise<void> {
+        const data = Utilities.deepClone(externalData);
+
+        data.room = new Room(Utilities.deepFreeze(data.room), this.manager);
+        Utilities.deepFreeze(data.leavingUser);
+
+        for (const appId of this.listeners.get(AppInterface.IPostRoomUserLeave)) {
+            const app = this.manager.getOneById(appId);
+
+            if (app.hasMethod(AppMethod.EXECUTE_POST_ROOM_USER_LEAVE)) {
+                await app.call(AppMethod.EXECUTE_POST_ROOM_USER_LEAVE,
+                    data,
+                    this.am.getReader(appId),
+                    this.am.getHttp(appId),
+                    this.am.getPersistence(appId),
+                    this.am.getModifier(appId),
                 );
             }
         }
@@ -1069,12 +1123,12 @@ export class AppListenerManager {
             }
 
             await app.call(AppMethod.EXECUTE_POST_LIVECHAT_GUEST_SAVED,
-                           cfLivechatRoom,
-                           this.am.getReader(appId),
-                           this.am.getHttp(appId),
-                           this.am.getPersistence(appId),
-                           this.am.getModifier(appId),
-                          );
+                cfLivechatRoom,
+                this.am.getReader(appId),
+                this.am.getHttp(appId),
+                this.am.getPersistence(appId),
+                this.am.getModifier(appId),
+            );
         }
     }
 
@@ -1089,12 +1143,31 @@ export class AppListenerManager {
             }
 
             await app.call(AppMethod.EXECUTE_POST_LIVECHAT_ROOM_SAVED,
-                           cfLivechatRoom,
-                           this.am.getReader(appId),
-                           this.am.getHttp(appId),
-                           this.am.getPersistence(appId),
-                           this.am.getModifier(appId),
-                          );
+                cfLivechatRoom,
+                this.am.getReader(appId),
+                this.am.getHttp(appId),
+                this.am.getPersistence(appId),
+                this.am.getModifier(appId),
+            );
+        }
+    }
+
+    // FileUpload
+    private async executePreFileUpload(data: IFileUploadContext): Promise<void> {
+        const context = Object.freeze(data);
+
+        for (const appId of this.listeners.get(AppInterface.IPreFileUpload)) {
+            const app = this.manager.getOneById(appId);
+
+            if (app.hasMethod(AppMethod.EXECUTE_PRE_FILE_UPLOAD)) {
+                await app.call(AppMethod.EXECUTE_PRE_FILE_UPLOAD,
+                    context,
+                    this.am.getReader(appId),
+                    this.am.getHttp(appId),
+                    this.am.getPersistence(appId),
+                    this.am.getModifier(appId),
+                );
+            }
         }
     }
 }

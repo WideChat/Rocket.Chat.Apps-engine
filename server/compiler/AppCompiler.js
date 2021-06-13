@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppCompiler = void 0;
 const path = require("path");
 const vm = require("vm");
 const App_1 = require("../../definition/App");
@@ -23,7 +24,9 @@ class AppCompiler {
             throw new Error(`Invalid App package for "${storage.info.name}". ` +
                 `Could not find the classFile (${storage.info.classFile}) file.`);
         }
-        const customRequire = Utilities_1.Utilities.buildCustomRequire(files);
+        const logLevelSetting = storage.settings.log_level;
+        const logLevel = logLevelSetting && (logLevelSetting.value || logLevelSetting.packageValue) || 0;
+        const customRequire = Utilities_1.Utilities.buildCustomRequire(files, storage.info.id, logLevel);
         const context = vm.createContext({ require: customRequire, exports, process: {}, console });
         const script = new vm.Script(files[path.normalize(storage.info.classFile)]);
         const result = script.runInContext(context);

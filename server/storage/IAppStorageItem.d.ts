@@ -1,5 +1,6 @@
 import { AppStatus } from '../../definition/AppStatus';
 import { IAppInfo } from '../../definition/metadata';
+import { IPermission } from '../../definition/permissions/IPermission';
 import { ISetting } from '../../definition/settings';
 import { IMarketplaceInfo } from '../marketplace';
 export interface IAppStorageItem {
@@ -23,4 +24,5 @@ export interface IAppStorageItem {
         [int: string]: boolean;
     };
     marketplaceInfo?: IMarketplaceInfo;
+    permissionsGranted?: Array<IPermission>;
 }

@@ -1,13 +1,15 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppPackageParser = void 0;
 const AdmZip = require("adm-zip");
 const fs = require("fs");
 const path = require("path");
@@ -129,8 +131,8 @@ class AppPackageParser {
         return info.version.replace(/^[^0-9]/, '').split('-')[0];
     }
 }
+exports.AppPackageParser = AppPackageParser;
 // tslint:disable-next-line:max-line-length
 AppPackageParser.uuid4Regex = /^[0-9a-fA-f]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
-exports.AppPackageParser = AppPackageParser;
 
 //# sourceMappingURL=AppPackageParser.js.map

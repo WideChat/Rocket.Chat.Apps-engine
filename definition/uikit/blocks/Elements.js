@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ButtonStyle = exports.BlockElementType = void 0;
 var BlockElementType;
 (function (BlockElementType) {
     BlockElementType["BUTTON"] = "button";

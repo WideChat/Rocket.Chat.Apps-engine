@@ -26,6 +26,7 @@ import {
     Reader,
     RoomRead,
     SchedulerExtend,
+    SchedulerModify,
     ServerSettingRead,
     ServerSettingsModify,
     SettingRead,
@@ -35,6 +36,7 @@ import {
     UploadRead,
     UserRead,
 } from '../accessors';
+import { CloudWorkspaceRead } from '../accessors/CloudWorkspaceRead';
 import { AppManager } from '../AppManager';
 import { AppBridges } from '../bridges/AppBridges';
 
@@ -115,10 +117,11 @@ export class AppAccessorManager {
 
     public getConfigurationModify(appId: string): IConfigurationModify {
         if (!this.configModifiers.has(appId)) {
-            const sets = new ServerSettingsModify(this.bridges.getServerSettingBridge(), appId);
-            const cmds = new SlashCommandsModify(this.manager.getCommandManager(), appId);
-
-            this.configModifiers.set(appId, new ConfigurationModify(sets, cmds));
+            this.configModifiers.set(appId, new ConfigurationModify(
+                new ServerSettingsModify(this.bridges.getServerSettingBridge(), appId),
+                new SlashCommandsModify(this.manager.getCommandManager(), appId),
+                new SchedulerModify(this.bridges.getSchedulerBridge(), appId),
+            ));
         }
 
         return this.configModifiers.get(appId);
@@ -134,8 +137,9 @@ export class AppAccessorManager {
             const noti = new Notifier(this.bridges.getUserBridge(), this.bridges.getMessageBridge(), appId);
             const livechat = new LivechatRead(this.bridges.getLivechatBridge(), appId);
             const upload = new UploadRead(this.bridges.getUploadBridge(), appId);
+            const cloud = new CloudWorkspaceRead(this.bridges.getCloudWorkspaceBridge(), appId);
 
-            this.readers.set(appId, new Reader(env, msg, persist, room, user, noti, livechat, upload));
+            this.readers.set(appId, new Reader(env, msg, persist, room, user, noti, livechat, upload, cloud));
         }
 
         return this.readers.get(appId);

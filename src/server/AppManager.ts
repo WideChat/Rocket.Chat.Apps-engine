@@ -1,25 +1,32 @@
+import { AppStatus, AppStatusUtils } from '../definition/AppStatus';
+import { AppMethod } from '../definition/metadata';
+import { IPermission } from '../definition/permissions/IPermission';
+import { IUser, UserType } from '../definition/users';
 import { AppBridges } from './bridges';
 import { AppCompiler, AppFabricationFulfillment, AppPackageParser } from './compiler';
+import { InvalidLicenseError } from './errors';
 import { IGetAppsFilter } from './IGetAppsFilter';
 import {
-    AppAccessorManager,
-    AppApiManager,
-    AppExternalComponentManager,
-    AppLicenseManager,
-    AppListenerManager,
-    AppSchedulerManager,
-    AppSettingsManager,
+    AppAccessorManager, AppApiManager, AppExternalComponentManager, AppLicenseManager, AppListenerManager, AppSchedulerManager, AppSettingsManager,
     AppSlashCommandManager,
 } from './managers';
+import { AppPermissionManager } from './managers/AppPermissionManager';
+import { IMarketplaceInfo } from './marketplace';
 import { DisabledApp } from './misc/DisabledApp';
+import { defaultPermissions } from './permissions/AppPermissions';
 import { ProxiedApp } from './ProxiedApp';
 import { AppLogStorage, AppStorage, IAppStorageItem } from './storage';
 
-import { AppStatus, AppStatusUtils } from '../definition/AppStatus';
-import { AppMethod } from '../definition/metadata';
-import { IUser, UserType } from '../definition/users';
-import { InvalidLicenseError } from './errors';
-import { IMarketplaceInfo } from './marketplace';
+export interface IAppInstallParameters {
+    enable: boolean;
+    marketplaceInfo?: IMarketplaceInfo;
+    permissionsGranted?: Array<IPermission>;
+    user: IUser;
+}
+
+export interface IAppUninstallParameters {
+    user: IUser;
+}
 
 export class AppManager {
     public static Instance: AppManager;
@@ -111,7 +118,27 @@ export class AppManager {
 
     /** Gets the instance of the Bridge manager. */
     public getBridges(): AppBridges {
-        return this.bridges;
+        const handler = {
+            get(target: AppBridges, prop, receiver) {
+                const reflection = Reflect.get(target, prop, receiver);
+
+                if (typeof prop === 'symbol' || typeof prop === 'number') {
+                    return reflection;
+                }
+
+                if (typeof (target as any)[prop] === 'function' && /^get.+Bridge$/.test(prop)) {
+                    return (...args: Array<any>) => {
+                        const bridge = reflection.apply(target, args);
+
+                        return AppPermissionManager.proxy(bridge);
+                    };
+                }
+
+                return reflection;
+            },
+        } as ProxyHandler<AppBridges>;
+
+        return new Proxy(this.bridges, handler);
     }
 
     /** Gets the instance of the listener manager. */
@@ -202,7 +229,7 @@ export class AppManager {
                 continue;
             }
 
-            await this.initializeApp(items.get(rl.getID()), rl, true).catch(console.error);
+            await this.initializeApp(items.get(rl.getID()), rl, false, true).catch(console.error);
         }
 
         // Let's ensure the required settings are all set
@@ -223,6 +250,7 @@ export class AppManager {
                 await this.enableApp(items.get(app.getID()), app, true, app.getPreviousStatus() === AppStatus.MANUALLY_ENABLED).catch(console.error);
             } else if (!AppStatusUtils.isError(app.getStatus())) {
                 this.listenerManager.lockEssentialEvents(app);
+                await this.schedulerManager.cancelAllJobs(app.getID());
             }
         }
 
@@ -310,11 +338,22 @@ export class AppManager {
         return this.apps.get(appId);
     }
 
+    public getPermissionsById(appId: string): Array<IPermission> {
+        const app = this.apps.get(appId);
+
+        if (!app) {
+            return [];
+        }
+        const { permissionsGranted } = app.getStorageItem();
+
+        return permissionsGranted || defaultPermissions;
+    }
+
     public async enable(id: string): Promise<boolean> {
         const rl = this.apps.get(id);
 
         if (!rl) {
-            throw new Error(`No App by the id "${id}" exists.`);
+            throw new Error(`No App by the id "${ id }" exists.`);
         }
 
         if (AppStatusUtils.isEnabled(rl.getStatus())) {
@@ -327,7 +366,7 @@ export class AppManager {
 
         const storageItem = await this.storage.retrieveOne(id);
         if (!storageItem) {
-            throw new Error(`Could not enable an App with the id of "${id}" as it doesn't exist.`);
+            throw new Error(`Could not enable an App with the id of "${ id }" as it doesn't exist.`);
         }
 
         const isSetup = await this.runStartUpProcess(storageItem, rl, true, false);
@@ -349,7 +388,7 @@ export class AppManager {
         const app = this.apps.get(id);
 
         if (!app) {
-            throw new Error(`No App by the id "${id}" exists.`);
+            throw new Error(`No App by the id "${ id }" exists.`);
         }
 
         if (AppStatusUtils.isEnabled(app.getStatus())) {
@@ -380,7 +419,9 @@ export class AppManager {
         return true;
     }
 
-    public async add(appPackage: Buffer, enable = true, marketplaceInfo?: IMarketplaceInfo): Promise<AppFabricationFulfillment> {
+    public async add(appPackage: Buffer, installationParameters: IAppInstallParameters): Promise<AppFabricationFulfillment> {
+        const { enable = true, marketplaceInfo, permissionsGranted, user } = installationParameters;
+
         const aff = new AppFabricationFulfillment();
         const result = await this.getParser().unpackageApp(appPackage);
 
@@ -395,12 +436,13 @@ export class AppManager {
             // tslint:disable-next-line: max-line-length
             compiled: Object.entries(result.files).reduce(
                 (files, [key, value]) => (files[key.replace(/\./gi, '$')] = value, files),
-                {} as {[key: string]: string},
+                {} as { [key: string]: string },
             ),
             languageContent: result.languageContent,
             settings: {},
             implemented: result.implemented.getValues(),
             marketplaceInfo,
+            permissionsGranted,
         };
 
         // Now that is has all been compiled, let's get the
@@ -437,6 +479,8 @@ export class AppManager {
             // If an error occurs during this, oh well.
         });
 
+        await this.installApp(created, app, user);
+
         // Should enable === true, then we go through the entire start up process
         // Otherwise, we only initialize it.
         if (enable) {
@@ -448,8 +492,11 @@ export class AppManager {
 
         return aff;
     }
-    public async remove(id: string): Promise<ProxiedApp> {
+    public async remove(id: string, uninstallationParameters: IAppUninstallParameters): Promise<ProxiedApp> {
         const app = this.apps.get(id);
+        const { user } = uninstallationParameters;
+
+        await this.uninstallApp(app, user);
 
         // Let everyone know that the App has been removed
         await this.bridges.getAppActivationBridge().appRemoved(app).catch();
@@ -477,7 +524,7 @@ export class AppManager {
         return app;
     }
 
-    public async update(appPackage: Buffer): Promise<AppFabricationFulfillment> {
+    public async update(appPackage: Buffer, permissionsGranted: Array<IPermission>): Promise<AppFabricationFulfillment> {
         const aff = new AppFabricationFulfillment();
         const result = await this.getParser().unpackageApp(appPackage);
 
@@ -500,11 +547,15 @@ export class AppManager {
             info: result.info,
             status: this.apps.get(old.id).getStatus(),
             zip: appPackage.toString('base64'),
-            compiled: result.files,
+            compiled: Object.entries(result.files).reduce(
+                (files, [key, value]) => (files[key.replace(/\./gi, '$')] = value, files),
+                {} as {[key: string]: string},
+            ),
             languageContent: result.languageContent,
             settings: old.settings,
             implemented: result.implemented.getValues(),
             marketplaceInfo: old.marketplaceInfo,
+            permissionsGranted,
         });
 
         // Now that is has all been compiled, let's get the
@@ -537,7 +588,7 @@ export class AppManager {
     }
 
     public getLanguageContent(): { [key: string]: object } {
-        const langs: { [key: string]: object } = { };
+        const langs: { [key: string]: object } = {};
 
         this.apps.forEach((rl) => {
             const content = rl.getStorageItem().languageContent;
@@ -692,6 +743,33 @@ export class AppManager {
         return this.enableApp(storageItem, app, true, isManual, silenceStatus);
     }
 
+    private async installApp(storageItem: IAppStorageItem, app: ProxiedApp, user: IUser): Promise<boolean> {
+        let result: boolean;
+        const read = this.getAccessorManager().getReader(storageItem.id);
+        const http = this.getAccessorManager().getHttp(storageItem.id);
+        const persistence = this.getAccessorManager().getPersistence(storageItem.id);
+        const modifier = this.getAccessorManager().getModifier(storageItem.id);
+        const context = { user };
+
+        try {
+            await app.call(AppMethod.ONINSTALL, context, read, http, persistence, modifier);
+
+            result = true;
+        } catch (e) {
+            const status = AppStatus.ERROR_DISABLED;
+
+            if (e.name === 'NotEnoughMethodArgumentsError') {
+                app.getLogger().warn('Please report the following error:');
+            }
+
+            result = false;
+
+            await app.setStatus(status);
+        }
+
+        return result;
+    }
+
     private async initializeApp(storageItem: IAppStorageItem, app: ProxiedApp, saveToDb = true, silenceStatus = false): Promise<boolean> {
         let result: boolean;
         const configExtend = this.getAccessorManager().getConfigurationExtend(storageItem.id);
@@ -715,7 +793,6 @@ export class AppManager {
                 status = AppStatus.INVALID_LICENSE_DISABLED;
             }
 
-            console.error(e);
             this.commandManager.unregisterCommands(storageItem.id);
             this.externalComponentManager.unregisterExternalComponents(storageItem.id);
             this.apiManager.unregisterApis(storageItem.id);
@@ -853,4 +930,39 @@ export class AppManager {
 
         return !!this.createAppUser(app);
     }
+
+    private async uninstallApp(app: ProxiedApp, user: IUser): Promise<boolean> {
+        let result: boolean;
+        const read = this.getAccessorManager().getReader(app.getID());
+        const http = this.getAccessorManager().getHttp(app.getID());
+        const persistence = this.getAccessorManager().getPersistence(app.getID());
+        const modifier = this.getAccessorManager().getModifier(app.getID());
+        const context = { user };
+
+        try {
+            await app.call(AppMethod.ONUNINSTALL, context, read, http, persistence, modifier);
+
+            result = true;
+        } catch (e) {
+            const status = AppStatus.ERROR_DISABLED;
+
+            if (e.name === 'NotEnoughMethodArgumentsError') {
+                app.getLogger().warn('Please report the following error:');
+            }
+
+            result = false;
+
+            await app.setStatus(status);
+        }
+
+        return result;
+    }
 }
+
+export const getPermissionsByAppId = (appId: string) => {
+    if (!AppManager.Instance) {
+        console.error('AppManager should be instantiated first');
+        return [];
+    }
+    return AppManager.Instance.getPermissionsById(appId);
+};

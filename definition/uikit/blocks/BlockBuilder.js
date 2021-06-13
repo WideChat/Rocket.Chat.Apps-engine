@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BlockBuilder = void 0;
 const uuid = require("uuid/v1");
 const Blocks_1 = require("./Blocks");
 const Elements_1 = require("./Elements");

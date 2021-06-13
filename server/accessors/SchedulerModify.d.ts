@@ -9,4 +9,5 @@ export declare class SchedulerModify implements ISchedulerModify {
     scheduleRecurring(job: IRecurringSchedule): Promise<void>;
     cancelJob(jobId: string): Promise<void>;
     cancelAllJobs(): Promise<void>;
+    cancelJobByDataQuery(data: object): Promise<void>;
 }

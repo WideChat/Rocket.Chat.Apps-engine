@@ -19,6 +19,8 @@ export enum AppInterface {
     IPostRoomDeleted = 'IPostRoomDeleted',
     IPreRoomUserJoined = 'IPreRoomUserJoined',
     IPostRoomUserJoined = 'IPostRoomUserJoined',
+    IPreRoomUserLeave = 'IPreRoomUserLeave',
+    IPostRoomUserLeave = 'IPostRoomUserLeave',
     IRoomUserTyping = 'IRoomUserTyping',
     // External Components
     IPostExternalComponentOpened = 'IPostExternalComponentOpened',
@@ -38,4 +40,6 @@ export enum AppInterface {
     IPostLivechatRoomTransferred = 'IPostLivechatRoomTransferred',
     IPostLivechatGuestSaved = 'IPostLivechatGuestSaved',
     IPostLivechatRoomSaved = 'IPostLivechatRoomSaved',
+    // FileUpload
+    IPreFileUpload = 'IPreFileUpload',
 }
