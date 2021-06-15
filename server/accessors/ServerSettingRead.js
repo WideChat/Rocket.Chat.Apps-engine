@@ -24,7 +24,10 @@ class ServerSettingRead {
             if (typeof set === 'undefined') {
                 throw new Error(`No Server Setting found, or it is unaccessible, by the id of "${id}".`);
             }
-            return set.value || set.packageValue;
+            if (set.value === undefined || set.value === null) {
+                return set.packageValue;
+            }
+            return set.value;
         });
     }
     getAll() {
