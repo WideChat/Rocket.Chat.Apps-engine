@@ -33,7 +33,7 @@ class AppsEngineUIClient {
      */
     init() {
         this.listener = ({ data }) => {
-            if (!data.hasOwnProperty(constants_1.MESSAGE_ID)) {
+            if (!(data === null || data === void 0 ? void 0 : data.hasOwnProperty(constants_1.MESSAGE_ID))) {
                 return;
             }
             const { [constants_1.MESSAGE_ID]: { id, payload } } = data;
