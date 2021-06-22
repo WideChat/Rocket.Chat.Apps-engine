@@ -1,4 +1,4 @@
-name: Upstream catchup from Rocketchat alpha
+name: Upstream catchup from Rocketchat master
 
 on:
   schedule:
@@ -28,10 +28,10 @@ jobs:
       uses: shubhsherl/create-catchup-pr@v0.1.0
       with:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        SOURCE_BRANCH: "alpha"
+        SOURCE_BRANCH: "master"
         SOURCE_REPO: "RocketChat"
-        TARGET_BRANCH: "alpha"
+        TARGET_BRANCH: "master"
         GITHUB_REPO: ${{github.repository}}
-        TITLE: "[Upstream Catchup] Merge RC:alpha to alpha"
-        BODY: "Weekly Catchup PR to merge RC:alpha in alpha."
+        TITLE: "[Upstream Catchup] Merge RC:master to master"
+        BODY: "Weekly Catchup PR to merge RC:master in master."
         DRAFT: "true"
